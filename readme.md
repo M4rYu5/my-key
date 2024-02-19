@@ -5,7 +5,7 @@ This repository contains a collection of my personal [AutoHotkey (AHK v1.1)](htt
 ## Layout
 A representation of changes in a 60% keyboard. Note that alternative layers are not displayed.
 
-![image](https://github.com/M4rYu5/web-dev-practice/assets/30922014/f05fd11f-3946-4fbb-aa79-daa56ee69813)
+![image](keyboard.png)
 
 ## Scripts
 

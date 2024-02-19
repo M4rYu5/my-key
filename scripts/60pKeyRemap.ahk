@@ -71,10 +71,7 @@ CapsLock & =::F12
 
 
 
-; I just have to learn to press Fn + Esc, which shouldn't be that hard
-; Esc::`
-; `::Esc
-; CapsLock & BackSpace::Esc
+CapsLock & \::`
 
 
 
