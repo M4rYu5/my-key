@@ -12,3 +12,10 @@ return
 FormatTime, CurrentDateTime,, yyyy-MM-dd HH:mm
 SendInput %CurrentDateTime%
 return
+
+
+; ↑ ← ↓ →
+:*:.i::{U+2191}
+:*:.j::{U+2190}
+:*:.k::{U+2193}
+:*:.l::{U+2192}
