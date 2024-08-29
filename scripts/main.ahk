@@ -20,7 +20,7 @@
 
 #Include toggleNavigationBase.ahk
 
-#Include smallRemap.ahk
+#Include homeRowNavigation.ahk
 #Include 60pKeyRemap.ahk
 #Include stringReplace.ahk
 
