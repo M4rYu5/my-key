@@ -17,4 +17,9 @@
     s::Down
     w::Up
 
+    ; ARROWS
+    i:: Send {U+2191} ; ↑
+    j:: Send {U+2190} ; ←
+    k:: Send {U+2193} ; ↓
+    l:: Send {U+2192} ; →
 #IF
