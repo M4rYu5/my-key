@@ -18,6 +18,7 @@
 ; #3 make distinct init functions (in each script) to init global variable
 
 
+#Include toggleNavigationBase.ahk
 
 #Include smallRemap.ahk
 #Include 60pKeyRemap.ahk
