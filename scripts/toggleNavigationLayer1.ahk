@@ -17,6 +17,9 @@
     s::Down
     w::Up
 
+    c::PgDn
+    x::PgUp
+
     ; ARROWS
     i:: Send {U+2191} ; ↑
     j:: Send {U+2190} ; ←
