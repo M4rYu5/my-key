@@ -12,3 +12,8 @@ return
 FormatTime, CurrentDateTime,, yyyy-MM-dd HH:mm
 SendInput %CurrentDateTime%
 return
+
+
+:*:4vid::
+SendInput {Blind}{Text}document.getElementsByTagName('video')[0].playbackRate = 3
+return
