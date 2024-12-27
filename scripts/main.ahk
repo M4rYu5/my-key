@@ -5,7 +5,7 @@
 ; and this could leave global variables uninitialized.
 ; 
 ; Possible solutions:
-; #1 like C++ split scripts in headers and bodyes
+; #1 like C++, split the scripts in header/source pairs
 ; #2 set global variables if not initialized when using them, 
 ;   maybe making a function to get/set global variables:
 ;   GetGlobal(globalVar, defaultVal){
@@ -25,3 +25,4 @@
 #Include stringReplace.ahk
 
 #Include muteMike.ahk
+#Include autoClick.ahk
