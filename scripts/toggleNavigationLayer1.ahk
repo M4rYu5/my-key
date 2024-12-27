@@ -20,6 +20,11 @@
     c::PgDn
     x::PgUp
 
+    LCtrl & a::a
+    LCtrl & w::w
+    LCtrl & c::c
+    LCtrl & s::s
+
     ; ARROWS
     i:: Send {U+2191} ; ↑
     j:: Send {U+2190} ; ←
