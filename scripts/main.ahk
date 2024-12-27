@@ -18,11 +18,11 @@
 ; #3 make distinct init functions (in each script) to init global variable
 
 
-#Include toggleNavigationBase.ahk
+; #Include toggleNavigationBase.ahk
 
 #Include homeRowNavigation.ahk
 #Include 60pKeyRemap.ahk
 #Include stringReplace.ahk
 
 #Include muteMike.ahk
-#Include autoClick.ahk
+; #Include autoClick.ahk
