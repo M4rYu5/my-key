@@ -4,9 +4,9 @@ module;
 
 export module Key:ChainHandler;
 
-import :State;
-import :Event;
-import :Result;
+export import :State;
+export import :Event;
+export import :Result;
 
 namespace Key::Core {
 
