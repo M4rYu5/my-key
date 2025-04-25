@@ -1,5 +1,11 @@
 ﻿{
   "version": 8,
+  "buildPresets": [
+    {
+      "name": "linux-debug",
+      "configurePreset": "linux-debug"
+    }
+  ],
   "configurePresets": [
     {
       "name": "windows-base",
