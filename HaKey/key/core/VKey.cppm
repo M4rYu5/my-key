@@ -1,9 +1,13 @@
-export module Key:VK;
+export module Core:VK;
 
-namespace Key::Core {
+namespace HaKey::Core {
+
+	//namespace VKey {
+	//	const int Key_A = 30;
+	//}
 
 	export enum class VKey {
-		A
+		A = 30,
 	};
 
 }

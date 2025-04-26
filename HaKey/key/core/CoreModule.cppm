@@ -1,4 +1,4 @@
-export module Key;
+export module Core;
 
 export import :State;
 export import :Event;

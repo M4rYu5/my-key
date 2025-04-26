@@ -1,7 +1,10 @@
-export module Key:State;
+export module Core:State;
 
-namespace Key::Core {
+namespace HaKey::Core {
 
+	//namespace HaKeyState {
+	//	const int DOWN = 1;
+	//}
 	export enum class KeyState {
 		Down,
 		Up,

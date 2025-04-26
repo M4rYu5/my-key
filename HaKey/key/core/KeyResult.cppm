@@ -1,8 +1,8 @@
-export module Key:Result;
+export module Core:Result;
 
 import :VK;
 
-namespace Key::Core {
+namespace HaKey::Core {
 
 	export class KeyResult {
 	public:

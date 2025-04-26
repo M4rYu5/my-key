@@ -2,13 +2,13 @@ module;
 
 #include "memory"
 
-export module Key:ChainHandler;
+export module Core:ChainHandler;
 
 export import :State;
 export import :Event;
 export import :Result;
 
-namespace Key::Core {
+namespace HaKey::Core {
 
 	export class KeyChainHandler {
 	protected:

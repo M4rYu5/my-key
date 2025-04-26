@@ -1,9 +1,9 @@
-export module Key:Event;
+export module Core:Event;
 
 import :State;
 import :VK;
 
-namespace Key::Core {
+namespace HaKey::Core {
 
 	export class KeyEvent {
 	public:

@@ -4,9 +4,9 @@ module;
 
 export module Key:Dispatcher;
 
-import :ChainHandler;
+import Core;
 
-namespace Key {
+namespace HaKey {
 
 	export class KeyDispatcher : public Core::KeyChainHandler {
 
