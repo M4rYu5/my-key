@@ -3,6 +3,8 @@ module;
 #include <memory>
 #include <iostream>
 #include <cstring>
+#include <vector>
+#include <span>
 
 #include <fcntl.h>
 #include <unistd.h>
@@ -12,7 +14,7 @@ module;
 
 export module System:Linux;
 
-import Core;
+export import Core;
 
 namespace HaKey::System
 {
@@ -20,19 +22,19 @@ namespace HaKey::System
 	export class LinuxKeyDispatcher
 	{
 	private:
-		void (*on_key)(std::shared_ptr<Core::KeyEvent>);
+		void (*on_key)(Core::KeyEvent);
 		int uinput_fd = setup_uinput_device();
 
 	public:
-		LinuxKeyDispatcher(void (&on_key)(std::shared_ptr<Core::KeyEvent>))
+		LinuxKeyDispatcher(void (*on_key)(Core::KeyEvent))
 		{
 			this->on_key = on_key;
 		}
 
-		void Listen()
+		void Listen(int device_id = 0)
 		{
-			const char *dev_path = "/dev/input/event0"; // your input device
-			int input_fd = open(dev_path, O_RDONLY);
+			std::string dev_path = "/dev/input/event" + std::to_string(device_id); // your input device
+			int input_fd = open(dev_path.c_str(), O_RDONLY);
 			if (input_fd < 0)
 			{
 				std::cerr << "Failed to open device\n";
@@ -51,14 +53,17 @@ namespace HaKey::System
 				ssize_t bytes = read(input_fd, &ev, sizeof(ev));
 				if (bytes == sizeof(ev))
 				{
-					if (ev.type == EV_KEY && ev.code == 30)
+					if (ev.type != EV_KEY)
 					{
-						std::cout << "Suppressed A key\n";
-						continue; // don't forward it
+						// forward everything that isn't a key to the virtual keyboard
+						write(uinput_fd, &ev, sizeof(ev));
+						continue;
 					}
 
-					// Forward everything else to virtual device
-					Send((Core::VKey)ev.code);
+					// pass it into the filter
+					if (on_key){
+						on_key(Core::KeyEvent(ev.code, ev.value));
+					}
 				}
 			}
 
@@ -67,22 +72,17 @@ namespace HaKey::System
 			return;
 		}
 
-		void Send(Core::VKey k)
+		void Send(std::span<Core::KeyEvent> events)
 		{
 			struct input_event ev;
 
-			// key press
-			ev.type = EV_KEY;
-			ev.code = (__u16)k;
-			ev.value = 1;
-			write(uinput_fd, &ev, sizeof(ev));
-
-			// key release
-			ev.type = EV_KEY;
-			ev.code = (__u16)k;
-			ev.value = 0;
-			write(uinput_fd, &ev, sizeof(ev));
-
+			for (const Core::KeyEvent& key : events ){
+				ev.type = EV_KEY;
+				ev.code = key.key_code;
+				ev.value = key.state;
+				write(uinput_fd, &ev, sizeof(ev));
+			}
+			
 			// sync event
 			ev.type = EV_SYN;
 			ev.code = SYN_REPORT;
