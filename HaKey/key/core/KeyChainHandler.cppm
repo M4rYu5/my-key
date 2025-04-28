@@ -17,7 +17,7 @@ namespace HaKey::Core {
 		/// <summary>
 		/// Handle the key event. You have to call next->OnKey, for key propagation.
 		/// </summary>
-		virtual void OnKey(std::shared_ptr<KeyEvent> key, std::shared_ptr<KeyResult> result) = 0;
+		virtual void OnKey(KeyEvent key, std::shared_ptr<KeyResult> result) = 0;
 
 		/// <summary>
 		/// Add a new handler

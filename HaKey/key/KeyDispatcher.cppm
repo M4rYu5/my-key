@@ -35,7 +35,7 @@ namespace HaKey {
 			
 		}
 		
-		void OnKey(std::shared_ptr<Core::KeyEvent> key, std::shared_ptr<Core::KeyResult> result) override {
+		void OnKey(Core::KeyEvent key, std::shared_ptr<Core::KeyResult> result) override {
 			next->OnKey(key, result);
 		}
 
