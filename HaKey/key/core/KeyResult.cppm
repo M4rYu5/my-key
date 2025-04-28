@@ -4,14 +4,14 @@ module;
 
 export module Core:Result;
 
-import :VK;
+import VKey;
 
 namespace HaKey::Core {
 
 	export class KeyResult {
 	public:
 		bool suppress_original;
-		std::vector<VKey> out_keys;
+		std::vector<VKey> keys;
 	};
 
 }

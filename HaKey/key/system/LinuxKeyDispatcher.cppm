@@ -15,8 +15,7 @@ module;
 
 export module System:Linux;
 
-export import Core;
-
+import Core;
 import :System;
 
 namespace HaKey::System

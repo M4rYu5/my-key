@@ -13,7 +13,7 @@ module;
 
 export module System:System;
 
-export import Core;
+import Core;
 
 namespace HaKey::System
 {
@@ -32,7 +32,7 @@ namespace HaKey::System
 		virtual void Listen(int device_id = 0) = 0;
 
 		virtual void Send(std::span<Core::KeyEvent> events) = 0;
-        
+
         virtual ~ISystemKeyDispatcher() = default;
 	};
 }
