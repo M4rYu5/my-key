@@ -4,7 +4,6 @@ module;
 
 export module Core:KeyChainHandler;
 
-export import :KeyState;
 export import :KeyEvent;
 export import :KeyResult;
 
