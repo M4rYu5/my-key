@@ -1,10 +1,11 @@
 module;
 
-#include <memory>
-#include <iostream>
 #include <cstring>
-#include <vector>
+#include <functional>
+#include <iostream>
+#include <memory>
 #include <span>
+#include <vector>
 
 #include <fcntl.h>
 #include <unistd.h>
@@ -16,20 +17,18 @@ export module System:Linux;
 
 export import Core;
 
+import :System;
+
 namespace HaKey::System
 {
 
-	export class LinuxKeyDispatcher
+	export class LinuxKeyDispatcher : public ISystemKeyDispatcher
 	{
 	private:
-		void (*on_key)(Core::KeyEvent);
 		int uinput_fd = setup_uinput_device();
 
 	public:
-		LinuxKeyDispatcher(void (*on_key)(Core::KeyEvent))
-		{
-			this->on_key = on_key;
-		}
+		LinuxKeyDispatcher(std::function<void(Core::KeyEvent)> on_key) : ISystemKeyDispatcher(on_key) {}
 
 		void Listen(int device_id = 0)
 		{
