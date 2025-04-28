@@ -2,11 +2,11 @@ module;
 
 #include <memory>
 
-export module Core:ChainHandler;
+export module Core:KeyChainHandler;
 
-export import :State;
-export import :Event;
-export import :Result;
+export import :KeyState;
+export import :KeyEvent;
+export import :KeyResult;
 
 namespace HaKey::Core {
 

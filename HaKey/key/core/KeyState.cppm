@@ -1,4 +1,4 @@
-export module Core:State;
+export module Core:KeyState;
 
 namespace HaKey::Core {
 

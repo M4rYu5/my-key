@@ -1,7 +1,6 @@
 
-export module Core:Event;
+export module Core:KeyEvent;
 
-// import :State;
 import VKey;
 
 namespace HaKey::Core {
