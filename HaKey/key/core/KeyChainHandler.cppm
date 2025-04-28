@@ -1,6 +1,6 @@
 module;
 
-#include "memory"
+#include <memory>
 
 export module Core:ChainHandler;
 
@@ -31,6 +31,7 @@ namespace HaKey::Core {
 				next = std::move(k);
 			}
 		}
-	};
 
+		virtual ~KeyChainHandler() = default;
+	};
 }
