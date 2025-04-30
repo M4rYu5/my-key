@@ -24,10 +24,15 @@ namespace HaKey::System
 	export class LinuxKeyDispatcher : public ISystemKeyDispatcher
 	{
 	private:
+		const struct input_event sync_ev{.time = {}, .type = EV_SYN, .code = SYN_REPORT, .value = 0};
 		int uinput_fd = setup_uinput_device();
+		std::vector<input_event> ev_batch;
 
 	public:
-		LinuxKeyDispatcher(std::function<void(Core::KeyEvent)> on_key) : ISystemKeyDispatcher(on_key) {}
+		LinuxKeyDispatcher(std::function<void(Core::KeyEvent)> on_key) : ISystemKeyDispatcher(on_key)
+		{
+			ev_batch.reserve(100);
+		}
 
 		void Listen(int device_id = 0)
 		{
@@ -59,7 +64,8 @@ namespace HaKey::System
 					}
 
 					// pass it into the filter
-					if (on_key){
+					if (on_key)
+					{
 						on_key(Core::KeyEvent(ev.code, ev.value));
 					}
 				}
@@ -72,20 +78,20 @@ namespace HaKey::System
 
 		void Send(std::span<Core::KeyEvent> events)
 		{
-			struct input_event ev;
-
-			for (const Core::KeyEvent& key : events ){
-				ev.type = EV_KEY;
-				ev.code = key.key_code;
-				ev.value = key.state;
-				write(uinput_fd, &ev, sizeof(ev));
+			ev_batch.clear();
+			for (const Core::KeyEvent &key : events)
+			{
+				ev_batch.push_back({
+					.time = {},
+					.type = EV_KEY,
+					.code = key.key_code,
+					.value = key.state
+				});
 			}
-			
-			// sync event
-			ev.type = EV_SYN;
-			ev.code = SYN_REPORT;
-			ev.value = 0;
-			write(uinput_fd, &ev, sizeof(ev));
+			// add sync event
+			ev_batch.push_back(sync_ev);
+			// write events
+			write(uinput_fd, ev_batch.data(), ev_batch.size() * sizeof(input_event));
 		}
 
 	private:
