@@ -7,29 +7,40 @@ export module Core:KeyResult;
 import :KeyEvent;
 import VKey;
 
-namespace HaKey::Core {
+namespace HaKey::Core
+{
 
-	export class KeyResult {
+	export class KeyResult
+	{
 	public:
 		bool suppress_original;
 		std::vector<KeyEvent> keys;
 
-		void AddPressed(VKey k){
-			keys.push_back(KeyEvent(k, 1));
+		KeyResult()
+		{
+			keys.reserve(100);
 		}
 
-		void AddReleased(VKey k){
-			keys.push_back(KeyEvent(k, 0));
+		void AddPressed(VKey k)
+		{
+			keys.emplace_back(k, 1);
 		}
 
-		void AddFullKey(VKey k){
+		void AddReleased(VKey k)
+		{
+			keys.emplace_back(k, 0);
+		}
+
+		void AddFullKey(VKey k)
+		{
 			// push
-			keys.push_back(KeyEvent(k, 1));
+			keys.emplace_back(k, 1);
 			// release
-			keys.push_back(KeyEvent(k, 0));
+			keys.emplace_back(k, 0);
 		}
 
-		void Clear(){
+		void Clear()
+		{
 			suppress_original = false;
 			keys.clear();
 		}
