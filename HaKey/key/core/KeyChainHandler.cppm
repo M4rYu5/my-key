@@ -10,11 +10,18 @@ export import :KeyResult;
 namespace HaKey::Core {
 
 	export class KeyChainHandler {
+	private:
+		std::unique_ptr<KeyChainHandler> _next = nullptr;
 	protected:
-		std::unique_ptr<KeyChainHandler> next = nullptr;
+		// TODO: will be nice to have a next function where check if this is null, and make this field private
+		void next(KeyEvent key, std::shared_ptr<KeyResult> result){
+			if (_next){
+				_next->OnKey(key, result);
+			}
+		}
 	public:
 		/// <summary>
-		/// Handle the key event. You have to call next->OnKey, for key propagation.
+		/// Handle the key event. You have to call next(key, result), for key propagation.
 		/// </summary>
 		virtual void OnKey(KeyEvent key, std::shared_ptr<KeyResult> result) = 0;
 
@@ -23,11 +30,11 @@ namespace HaKey::Core {
 		/// </summary>
 		/// <param name="k">handler</param>
 		void Add(std::unique_ptr<KeyChainHandler> k) {
-			if (next) {
-				next->Add(std::move(k));
+			if (_next) {
+				_next->Add(std::move(k));
 			}
 			else {
-				next = std::move(k);
+				_next = std::move(k);
 			}
 		}
 

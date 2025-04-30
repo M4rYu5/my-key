@@ -45,8 +45,9 @@ namespace HaKey {
 			_dispatcher->Send(result->keys);
 		}
 		
-		void OnKey(Core::KeyEvent key, std::shared_ptr<Core::KeyResult> result) override {
-			next->OnKey(key, result);
+		void OnKey(Core::KeyEvent key, std::shared_ptr<Core::KeyResult> result) override
+		{
+			next(key, result);
 		}
 
 	public:
