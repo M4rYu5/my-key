@@ -22,6 +22,7 @@ namespace HaKey
 	{
 	private:
 		System::ISystemKeyDispatcher *_dispatcher = nullptr;
+		std::shared_ptr<Core::KeyResult> result = std::make_shared<Core::KeyResult>();
 
 	public:
 		void Listen()
@@ -35,9 +36,7 @@ namespace HaKey
 	private:
 		void KeyHandler(Core::KeyEvent key)
 		{
-			// todo: make this member variable, and add a function to clear it
-			std::shared_ptr<Core::KeyResult> result = std::make_shared<Core::KeyResult>();
-
+			result->Clear();
 			OnKey(key, result);
 
 			if (!result->suppress_original)

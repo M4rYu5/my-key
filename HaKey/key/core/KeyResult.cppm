@@ -28,5 +28,10 @@ namespace HaKey::Core {
 			// release
 			keys.push_back(KeyEvent(k, 0));
 		}
+
+		void Clear(){
+			suppress_original = false;
+			keys.clear();
+		}
 	};
 }
