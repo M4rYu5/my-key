@@ -13,7 +13,6 @@ namespace HaKey::Core {
 	private:
 		std::unique_ptr<KeyChainHandler> _next = nullptr;
 	protected:
-		// TODO: will be nice to have a next function where check if this is null, and make this field private
 		void next(KeyEvent key, std::shared_ptr<KeyResult> result){
 			if (_next){
 				_next->OnKey(key, result);
