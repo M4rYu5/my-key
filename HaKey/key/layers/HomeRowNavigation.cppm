@@ -1,6 +1,7 @@
 module;
 
 #include <memory>
+#include <unordered_set>
 
 export module Layers:HomeRowNavigation;
 
@@ -17,6 +18,7 @@ namespace HaKey::Layers
     private:
         bool _caps_hold = false;
         bool _generated_hotkey = false;
+        std::unordered_set<VKey> active_keys;
 
     public:
         void OnKey(Core::KeyEvent key, std::shared_ptr<Core::KeyResult> result) override
@@ -44,6 +46,7 @@ namespace HaKey::Layers
                 {
                     result->AddFullKey(VKey::CAPSLOCK);
                 }
+                ReleaseActiveKeys(result);
                 _caps_hold = false;
                 _generated_hotkey = false;
             }
@@ -52,6 +55,15 @@ namespace HaKey::Layers
                 _caps_hold = true;
                 result->suppress_original = true;
             }
+        }
+
+        void ReleaseActiveKeys(std::shared_ptr<Core::KeyResult> result)
+        {
+            for (VKey key : active_keys)
+            {
+                result->AddKey(key, KeyState::Up);
+            }
+            active_keys.clear();
         }
 
         inline void KeySwap(Core::KeyEvent key, std::shared_ptr<Core::KeyResult> result)
@@ -109,8 +121,17 @@ namespace HaKey::Layers
             result->AddKey(key, state);
             _generated_hotkey = true;
             result->suppress_original = true;
+
+            if (state == KeyState::Up)
+            {
+                active_keys.erase(key);
+            }
+            else if (state == KeyState::Down)
+            {
+                active_keys.insert(key);
+            }
         }
-        
+
         inline bool IsKey(VKey key, Core::KeyEvent event)
         {
             return event.key_code == key;

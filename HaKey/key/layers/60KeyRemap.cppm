@@ -19,6 +19,7 @@ namespace HaKey::Layers
         bool _caps_generated_hotkey = false;
         bool _r_shift_hold = false;
         bool _r_shift_generated_hotkey = false;
+        std::unordered_set<VKey> active_keys;
 
     public:
         void OnKey(Core::KeyEvent key, std::shared_ptr<Core::KeyResult> result) override
@@ -50,6 +51,7 @@ namespace HaKey::Layers
                 {
                     result->AddFullKey(VKey::CAPSLOCK);
                 }
+                ReleaseActiveKeys(result);
                 _caps_hold = false;
                 _caps_generated_hotkey = false;
             }
@@ -68,6 +70,7 @@ namespace HaKey::Layers
                 {
                     result->AddFullKey(VKey::RIGHTSHIFT);
                 }
+                ReleaseActiveKeys(result);
                 _r_shift_hold = false;
                 _r_shift_generated_hotkey = false;
             }
@@ -76,6 +79,15 @@ namespace HaKey::Layers
                 _r_shift_hold = true;
                 result->suppress_original = true;
             }
+        }
+
+        void ReleaseActiveKeys(std::shared_ptr<Core::KeyResult> result)
+        {
+            for (VKey key : active_keys)
+            {
+                result->AddKey(key, KeyState::Up);
+            }
+            active_keys.clear();
         }
 
         inline void CapsKeySwap(Core::KeyEvent key, std::shared_ptr<Core::KeyResult> result)
@@ -188,11 +200,11 @@ namespace HaKey::Layers
             // >+,::Send {Volume_Down down}
             // >+, Up::Send {Volume_Down up}
             if (IsKey(VKey::COMMA, key))
-            RShiftSend(VKey::VOLUMEDOWN, key.state, result);
+                RShiftSend(VKey::VOLUMEDOWN, key.state, result);
             // >+.::Send {Volume_Up down}
             // >+. Up::Send {Volume_Up up}
             if (IsKey(VKey::DOT, key))
-            RShiftSend(VKey::VOLUMEUP, key.state, result);
+                RShiftSend(VKey::VOLUMEUP, key.state, result);
             // >+/::Send {Volume_Mute down}
             // >+/ Up::Send {Volume_Mute up}
             if (IsKey(VKey::SLASH, key))
@@ -204,6 +216,15 @@ namespace HaKey::Layers
             result->AddKey(key, state);
             _caps_generated_hotkey = true;
             result->suppress_original = true;
+
+            if (state == KeyState::Up)
+            {
+                active_keys.erase(key);
+            }
+            else if (state == KeyState::Down)
+            {
+                active_keys.insert(key);
+            }
         }
 
         inline void RShiftSend(VKey key, KeyState state, std::shared_ptr<Core::KeyResult> result)
@@ -211,6 +232,15 @@ namespace HaKey::Layers
             result->AddKey(key, state);
             _r_shift_generated_hotkey = true;
             result->suppress_original = true;
+
+            if (state == KeyState::Up)
+            {
+                active_keys.erase(key);
+            }
+            else if (state == KeyState::Down)
+            {
+                active_keys.insert(key);
+            }
         }
 
         inline bool IsKey(VKey key, Core::KeyEvent event)
