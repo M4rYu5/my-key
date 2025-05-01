@@ -1,19 +1,21 @@
 # My AHK Scripts
 
-This repository contains a collection of my personal [AutoHotkey (AHK v1.1)](https://www.autohotkey.com/) scripts.
+This repository contains:
+  - a collection of my personal [AutoHotkey (AHK v1.1)](https://www.autohotkey.com/) scripts.
+  - HaKey, a C++ application that is implementing _most of_ my AHK Script's functionality on Linux[^1].
 
 ## Layout
 A representation of changes in a 60% keyboard. Note that alternative layers are not displayed.
 
 ![image](keyboard.png)
 
-## Scripts
+## Scripts (AHK, windows)
 
 Here is a list of the scripts and a brief description of each:
 
 - [`main.ahk`](scripts/main.ahk): The main script that includes all other scripts. I'm using `Task Scheduler` to run this script at user log on.
 
-- [`smallRemap.ahk`](scripts/smallRemap.ahk): Implements custom home row modifiers using `CapsLock` as the main trigger. For example: `CapsLock` key combined with `i`, `j`, `k`, and `l` are remapped to arrows `↑`, `←`, `↓`, and `→` respectively.
+- [`homeRowNavigation.ahk`](scripts/homeRowNavigation.ahk): Implements custom home row modifiers using `CapsLock` as the main trigger. For example: `CapsLock` key combined with `i`, `j`, `k`, and `l` are remapped to arrows `↑`, `←`, `↓`, and `→` respectively.
 
 - [`stringReplace.ahk`](scripts/stringReplace.ahk): Contains hotstrings for quickly inserting the current date and time in different formats.
 
@@ -28,6 +30,16 @@ Here is a list of the scripts and a brief description of each:
 Please note that these scripts are designed for personal use and may need to be adjusted based on your specific needs and keyboard layout.
 
 
+## HaKey (app)
+The [HaKey](HaKey/) application was created as an alternative to AHK for Linux[^1]. 
 
+Stack:
+- Written in C++ for performance and compatibility reasons 🏃‍♂️
+- Created with modules for fast development and sanity 😇
+- Used CMake and Clang, to be able to build from any platform. 👽
+- Haven't followed C++ naming convention, it's more like C#. 🦄
+- Non user-configurable; layers are hard-coded for my needs:
+  - [`homeRowNavigation.ahk`](scripts/homeRowNavigation.ahk) in [HomeRowNavigation.cppm](HaKey/key/layers/HomeRowNavigation.cppm)
+  - [`60pKeyRemap.ahk`](scripts/60pKeyRemap.ahk) in [60KeyRemap.cppm](HaKey/key/layers/60KeyRemap.cppm)
 
-
+[^1]: Support for Windows and (probably) MacOS can be added, but it's not planned.
