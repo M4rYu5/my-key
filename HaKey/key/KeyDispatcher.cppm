@@ -25,12 +25,11 @@ namespace HaKey
 		std::shared_ptr<Core::KeyResult> result = std::make_shared<Core::KeyResult>();
 
 	public:
-		void Listen()
+		void Listen(int linux_device_id = 0)
 		{
 			_dispatcher = new System::LinuxKeyDispatcher([this](Core::KeyEvent key)
 														 { this->KeyHandler(key); });
-			// todo: Create a way to pass the device id for LinuxKeyDispatcher.Listen function
-			_dispatcher->Listen();
+			_dispatcher->Listen(linux_device_id);
 		}
 
 	private:
