@@ -6,6 +6,7 @@ export module Core:KeyResult;
 
 import :KeyEvent;
 import VKey;
+import KeyState;
 
 namespace HaKey::Core
 {
@@ -21,17 +22,27 @@ namespace HaKey::Core
 			keys.reserve(100);
 		}
 
-		void AddPressed(VKey k)
+		inline void AddKey(VKey k, KeyState state)
 		{
-			keys.emplace_back(k, 1);
+			keys.emplace_back(k, state);
 		}
 
-		void AddReleased(VKey k)
+		inline void AddPressed(VKey k)
 		{
-			keys.emplace_back(k, 0);
+			AddKey(k, KeyState::Down);
 		}
 
-		void AddFullKey(VKey k)
+		inline void AddRepeated(VKey k)
+		{
+			AddKey(k, KeyState::Repeat);
+		}
+
+		inline void AddReleased(VKey k)
+		{
+			AddKey(k, KeyState::Up);
+		}
+
+		inline void AddFullKey(VKey k)
 		{
 			// push
 			keys.emplace_back(k, 1);
@@ -39,7 +50,7 @@ namespace HaKey::Core
 			keys.emplace_back(k, 0);
 		}
 
-		void Clear()
+		inline void Clear()
 		{
 			suppress_original = false;
 			keys.clear();
