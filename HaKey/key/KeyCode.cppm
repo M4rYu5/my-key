@@ -9,6 +9,7 @@ namespace HaKey
 
 	// --- LINUX ---
 	export enum KeyCode : __u16 {
+		NONE = 0,
 		ESC = 1,
 		N_1 = 2,
 		N_2 = 3,

@@ -14,7 +14,7 @@ namespace HaKey::Core
 	export class KeyResult
 	{
 	public:
-		bool suppress_original;
+		bool suppress_original = false;
 		std::vector<Key> keys;
 
 		KeyResult()
