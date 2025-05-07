@@ -23,7 +23,7 @@ namespace HaKey::Layers
         std::unordered_set<VKey> active_keys;
 
     public:
-        void OnKey(Core::KeyEvent key, std::shared_ptr<Core::KeyResult> result) override
+        void OnKey(Core::Key key, std::shared_ptr<Core::KeyResult> result) override
         {
             // update
             CapsHotKeyUpdate(key, result);
@@ -44,7 +44,7 @@ namespace HaKey::Layers
         }
 
     private:
-        inline void CapsHotKeyUpdate(Core::KeyEvent key, std::shared_ptr<Core::KeyResult> result)
+        inline void CapsHotKeyUpdate(Core::Key key, std::shared_ptr<Core::KeyResult> result)
         {
             if (IsKeyUp(VKey::CAPSLOCK, key))
             {
@@ -63,7 +63,7 @@ namespace HaKey::Layers
             }
         }
 
-        inline void RShiftHotKeyUpdate(Core::KeyEvent key, std::shared_ptr<Core::KeyResult> result)
+        inline void RShiftHotKeyUpdate(Core::Key key, std::shared_ptr<Core::KeyResult> result)
         {
             if (IsKeyUp(VKey::RIGHTSHIFT, key))
             {
@@ -91,7 +91,7 @@ namespace HaKey::Layers
             active_keys.clear();
         }
 
-        inline void CapsKeySwap(Core::KeyEvent key, std::shared_ptr<Core::KeyResult> result)
+        inline void CapsKeySwap(Core::Key key, std::shared_ptr<Core::KeyResult> result)
         {
             // ; for 60% keyboard
 
@@ -177,7 +177,7 @@ namespace HaKey::Layers
                 CapsSend(VKey::GRAVE, key.state, result);
         }
 
-        inline void RShiftKeySwap(Core::KeyEvent key, std::shared_ptr<Core::KeyResult> result)
+        inline void RShiftKeySwap(Core::Key key, std::shared_ptr<Core::KeyResult> result)
         {
             // ; arrows for right hand, using right shift + pl;'
             // >+p::Send {Up down}
@@ -244,17 +244,17 @@ namespace HaKey::Layers
             }
         }
 
-        inline bool IsKey(VKey key, Core::KeyEvent event)
+        inline bool IsKey(VKey key, Core::Key event)
         {
             return event.key_code == key;
         }
 
-        inline bool IsKeyUp(VKey key, Core::KeyEvent event)
+        inline bool IsKeyUp(VKey key, Core::Key event)
         {
             return event.key_code == key && event.state == KeyState::Up;
         }
 
-        inline bool IsKeyDownOrRepeat(VKey key, Core::KeyEvent event)
+        inline bool IsKeyDownOrRepeat(VKey key, Core::Key event)
         {
             return event.key_code == key && (event.state == KeyState::Down || event.state == KeyState::Repeat);
         }

@@ -4,7 +4,7 @@ module;
 
 export module Core:KeyResult;
 
-import :KeyEvent;
+import :Key;
 import VKey;
 import KeyState;
 
@@ -15,7 +15,7 @@ namespace HaKey::Core
 	{
 	public:
 		bool suppress_original;
-		std::vector<KeyEvent> keys;
+		std::vector<Key> keys;
 
 		KeyResult()
 		{

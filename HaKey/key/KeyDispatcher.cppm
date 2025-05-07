@@ -27,13 +27,13 @@ namespace HaKey
 	public:
 		void Listen(int linux_device_id = 0)
 		{
-			_dispatcher = new System::LinuxKeyDispatcher([this](Core::KeyEvent key)
+			_dispatcher = new System::LinuxKeyDispatcher([this](Core::Key key)
 														 { this->KeyHandler(key); });
 			_dispatcher->Listen(linux_device_id);
 		}
 
 	private:
-		void KeyHandler(Core::KeyEvent key)
+		void KeyHandler(Core::Key key)
 		{
 			result->Clear();
 			OnKey(key, result);
@@ -46,7 +46,7 @@ namespace HaKey
 			_dispatcher->Send(result->keys);
 		}
 
-		void OnKey(Core::KeyEvent key, std::shared_ptr<Core::KeyResult> result) override
+		void OnKey(Core::Key key, std::shared_ptr<Core::KeyResult> result) override
 		{
 			next(key, result);
 		}

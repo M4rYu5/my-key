@@ -21,7 +21,7 @@ namespace HaKey::Layers
         std::unordered_set<VKey> active_keys;
 
     public:
-        void OnKey(Core::KeyEvent key, std::shared_ptr<Core::KeyResult> result) override
+        void OnKey(Core::Key key, std::shared_ptr<Core::KeyResult> result) override
         {
             // update
             HotKeyUpdate(key, result);
@@ -38,7 +38,7 @@ namespace HaKey::Layers
         }
 
     private:
-        inline void HotKeyUpdate(Core::KeyEvent key, std::shared_ptr<Core::KeyResult> result)
+        inline void HotKeyUpdate(Core::Key key, std::shared_ptr<Core::KeyResult> result)
         {
             if (IsKeyUp(VKey::CAPSLOCK, key))
             {
@@ -66,7 +66,7 @@ namespace HaKey::Layers
             active_keys.clear();
         }
 
-        inline void KeySwap(Core::KeyEvent key, std::shared_ptr<Core::KeyResult> result)
+        inline void KeySwap(Core::Key key, std::shared_ptr<Core::KeyResult> result)
         {
             // CAPSLOCK & s::LShift
             if (IsKey(VKey::S, key))
@@ -132,17 +132,17 @@ namespace HaKey::Layers
             }
         }
 
-        inline bool IsKey(VKey key, Core::KeyEvent event)
+        inline bool IsKey(VKey key, Core::Key event)
         {
             return event.key_code == key;
         }
 
-        inline bool IsKeyUp(VKey key, Core::KeyEvent event)
+        inline bool IsKeyUp(VKey key, Core::Key event)
         {
             return event.key_code == key && event.state == KeyState::Up;
         }
 
-        inline bool IsKeyDownOrRepeat(VKey key, Core::KeyEvent event)
+        inline bool IsKeyDownOrRepeat(VKey key, Core::Key event)
         {
             return event.key_code == key && (event.state == KeyState::Down || event.state == KeyState::Repeat);
         }
