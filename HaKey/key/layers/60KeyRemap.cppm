@@ -23,34 +23,34 @@ namespace HaKey::Layers
         std::unordered_set<KeyCode> active_keys;
 
     public:
-        void OnKey(Core::Key key, std::shared_ptr<Core::KeyResult> result) override
+        void OnKey(Core::KeyContext& context) override
         {
             // update
-            CapsHotKeyUpdate(key, result);
-            RShiftHotKeyUpdate(key, result);
+            CapsHotKeyUpdate(context.key, context.result);
+            RShiftHotKeyUpdate(context.key, context.result);
             if (!_caps_hold && !_r_shift_hold)
             {
-                next(key, result);
+                next(context);
                 return;
             }
 
             if (_caps_hold)
-                CapsKeySwap(key, result);
+                CapsKeySwap(context.key, context.result);
             if (_r_shift_hold)
-                RShiftKeySwap(key, result);
+                RShiftKeySwap(context.key, context.result);
 
             // propagate
-            next(key, result);
+            next(context);
         }
 
     private:
-        inline void CapsHotKeyUpdate(Core::Key key, std::shared_ptr<Core::KeyResult> result)
+        inline void CapsHotKeyUpdate(Core::Key key, Core::KeyResult& result)
         {
             if (IsKeyUp(KeyCode::CAPSLOCK, key))
             {
                 if (!_caps_generated_hotkey)
                 {
-                    result->AddFullKey(KeyCode::CAPSLOCK);
+                    result.AddFullKey(KeyCode::CAPSLOCK);
                 }
                 ReleaseActiveKeys(result);
                 _caps_hold = false;
@@ -59,17 +59,17 @@ namespace HaKey::Layers
             else if (IsKeyDownOrRepeat(KeyCode::CAPSLOCK, key))
             {
                 _caps_hold = true;
-                result->suppress_original = true;
+                result.suppress_original = true;
             }
         }
 
-        inline void RShiftHotKeyUpdate(Core::Key key, std::shared_ptr<Core::KeyResult> result)
+        inline void RShiftHotKeyUpdate(Core::Key key, Core::KeyResult& result)
         {
             if (IsKeyUp(KeyCode::RIGHTSHIFT, key))
             {
                 if (!_r_shift_generated_hotkey)
                 {
-                    result->AddFullKey(KeyCode::RIGHTSHIFT);
+                    result.AddFullKey(KeyCode::RIGHTSHIFT);
                 }
                 ReleaseActiveKeys(result);
                 _r_shift_hold = false;
@@ -78,20 +78,20 @@ namespace HaKey::Layers
             else if (IsKeyDownOrRepeat(KeyCode::RIGHTSHIFT, key))
             {
                 _r_shift_hold = true;
-                result->suppress_original = true;
+                result.suppress_original = true;
             }
         }
 
-        void ReleaseActiveKeys(std::shared_ptr<Core::KeyResult> result)
+        void ReleaseActiveKeys(Core::KeyResult& result)
         {
             for (KeyCode key : active_keys)
             {
-                result->AddKey(key, KeyState::Up);
+                result.AddKey(key, KeyState::Up);
             }
             active_keys.clear();
         }
 
-        inline void CapsKeySwap(Core::Key key, std::shared_ptr<Core::KeyResult> result)
+        inline void CapsKeySwap(Core::Key key, Core::KeyResult& result)
         {
             // ; for 60% keyboard
 
@@ -104,12 +104,12 @@ namespace HaKey::Layers
             // CapsLock & q::^CtrlBreak
             if (IsKeyDownOrRepeat(KeyCode::Q, key))
             {
-                result->AddPressed(KeyCode::LEFTCTRL);
-                result->AddPressed(KeyCode::PAUSE);
-                result->AddReleased(KeyCode::PAUSE);
-                result->AddReleased(KeyCode::LEFTCTRL);
+                result.AddPressed(KeyCode::LEFTCTRL);
+                result.AddPressed(KeyCode::PAUSE);
+                result.AddReleased(KeyCode::PAUSE);
+                result.AddReleased(KeyCode::LEFTCTRL);
                 _caps_generated_hotkey = true;
-                result->suppress_original = true;
+                result.suppress_original = true;
             }
 
             // ; most programs use F2 for renaming
@@ -177,7 +177,7 @@ namespace HaKey::Layers
                 CapsSend(KeyCode::GRAVE, key.state, result);
         }
 
-        inline void RShiftKeySwap(Core::Key key, std::shared_ptr<Core::KeyResult> result)
+        inline void RShiftKeySwap(Core::Key key, Core::KeyResult& result)
         {
             // ; arrows for right hand, using right shift + pl;'
             // >+p::Send {Up down}
@@ -212,11 +212,11 @@ namespace HaKey::Layers
                 RShiftSend(KeyCode::MUTE, key.state, result);
         }
 
-        inline void CapsSend(KeyCode key, KeyState state, std::shared_ptr<Core::KeyResult> result)
+        inline void CapsSend(KeyCode key, KeyState state, Core::KeyResult& result)
         {
-            result->AddKey(key, state);
+            result.AddKey(key, state);
             _caps_generated_hotkey = true;
-            result->suppress_original = true;
+            result.suppress_original = true;
 
             if (state == KeyState::Up)
             {
@@ -228,11 +228,11 @@ namespace HaKey::Layers
             }
         }
 
-        inline void RShiftSend(KeyCode key, KeyState state, std::shared_ptr<Core::KeyResult> result)
+        inline void RShiftSend(KeyCode key, KeyState state, Core::KeyResult& result)
         {
-            result->AddKey(key, state);
+            result.AddKey(key, state);
             _r_shift_generated_hotkey = true;
-            result->suppress_original = true;
+            result.suppress_original = true;
 
             if (state == KeyState::Up)
             {

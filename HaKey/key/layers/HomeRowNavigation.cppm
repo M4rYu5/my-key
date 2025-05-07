@@ -21,30 +21,30 @@ namespace HaKey::Layers
         std::unordered_set<KeyCode> active_keys;
 
     public:
-        void OnKey(Core::Key key, std::shared_ptr<Core::KeyResult> result) override
+        void OnKey(Core::KeyContext& context) override
         {
             // update
-            HotKeyUpdate(key, result);
+            HotKeyUpdate(context.key, context.result);
             if (!_caps_hold)
             {
-                next(key, result);
+                next(context);
                 return;
             }
 
-            KeySwap(key, result);
+            KeySwap(context.key, context.result);
 
             // propagate
-            next(key, result);
+            next(context);
         }
 
     private:
-        inline void HotKeyUpdate(Core::Key key, std::shared_ptr<Core::KeyResult> result)
+        inline void HotKeyUpdate(Core::Key key, Core::KeyResult& result)
         {
             if (IsKeyUp(KeyCode::CAPSLOCK, key))
             {
                 if (!_generated_hotkey)
                 {
-                    result->AddFullKey(KeyCode::CAPSLOCK);
+                    result.AddFullKey(KeyCode::CAPSLOCK);
                 }
                 ReleaseActiveKeys(result);
                 _caps_hold = false;
@@ -53,20 +53,20 @@ namespace HaKey::Layers
             else if (IsKeyDownOrRepeat(KeyCode::CAPSLOCK, key))
             {
                 _caps_hold = true;
-                result->suppress_original = true;
+                result.suppress_original = true;
             }
         }
 
-        void ReleaseActiveKeys(std::shared_ptr<Core::KeyResult> result)
+        void ReleaseActiveKeys(Core::KeyResult& result)
         {
             for (KeyCode key : active_keys)
             {
-                result->AddKey(key, KeyState::Up);
+                result.AddKey(key, KeyState::Up);
             }
             active_keys.clear();
         }
 
-        inline void KeySwap(Core::Key key, std::shared_ptr<Core::KeyResult> result)
+        inline void KeySwap(Core::Key key, Core::KeyResult& result)
         {
             // CAPSLOCK & s::LShift
             if (IsKey(KeyCode::S, key))
@@ -116,19 +116,19 @@ namespace HaKey::Layers
                 Send(KeyCode::SPACE, key.state, result);
         }
 
-        inline void Send(KeyCode key, KeyState state, std::shared_ptr<Core::KeyResult> result)
+        inline void Send(KeyCode code, KeyState state, Core::KeyResult& result)
         {
-            result->AddKey(key, state);
+            result.AddKey(code, state);
             _generated_hotkey = true;
-            result->suppress_original = true;
+            result.suppress_original = true;
 
             if (state == KeyState::Up)
             {
-                active_keys.erase(key);
+                active_keys.erase(code);
             }
             else if (state == KeyState::Down)
             {
-                active_keys.insert(key);
+                active_keys.insert(code);
             }
         }
 
