@@ -84,7 +84,7 @@ namespace HaKey::System
 				ev_batch.push_back({
 					.time = {},
 					.type = EV_KEY,
-					.code = key.key_code,
+					.code = key.code,
 					.value = key.state
 				});
 			}

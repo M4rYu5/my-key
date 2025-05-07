@@ -11,7 +11,7 @@ import Layers;
 
 // class Layer1 : public HaKey::Core::KeyChainHandler{
 //     void OnKey(HaKey::Core::Key key, std::shared_ptr<HaKey::Core::KeyResult> result) override{
-//         std::cout << key.key_code << " " << key.state  << "\n";
+//         std::cout << key.code << " " << key.state  << "\n";
 //         next(key, result);
 //     };
 // };

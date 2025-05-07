@@ -1,23 +1,23 @@
 
 export module Core:Key;
 
-import VKey;
+import KeyCode;
 import KeyState;
 
 namespace HaKey::Core {
 
 	export struct Key {
 	public:
-		VKey key_code;
+		KeyCode code;
 		KeyState state;
 
-		Key(VKey key_code, KeyState state){
-			this->key_code = key_code;
+		Key(KeyCode code, KeyState state){
+			this->code = code;
 			this->state = state;
 		}
 
-		Key(int key_code, int state){
-			this->key_code = (VKey)key_code;
+		Key(int code, int state){
+			this->code = (KeyCode)code;
 			this->state = (KeyState)state;
 		}
 	};

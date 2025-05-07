@@ -5,7 +5,7 @@ module;
 export module Core:KeyResult;
 
 import :Key;
-import VKey;
+import KeyCode;
 import KeyState;
 
 namespace HaKey::Core
@@ -22,27 +22,27 @@ namespace HaKey::Core
 			keys.reserve(100);
 		}
 
-		inline void AddKey(VKey k, KeyState state)
+		inline void AddKey(KeyCode k, KeyState state)
 		{
 			keys.emplace_back(k, state);
 		}
 
-		inline void AddPressed(VKey k)
+		inline void AddPressed(KeyCode k)
 		{
 			AddKey(k, KeyState::Down);
 		}
 
-		inline void AddRepeated(VKey k)
+		inline void AddRepeated(KeyCode k)
 		{
 			AddKey(k, KeyState::Repeat);
 		}
 
-		inline void AddReleased(VKey k)
+		inline void AddReleased(KeyCode k)
 		{
 			AddKey(k, KeyState::Up);
 		}
 
-		inline void AddFullKey(VKey k)
+		inline void AddFullKey(KeyCode k)
 		{
 			// push
 			keys.emplace_back(k, 1);
