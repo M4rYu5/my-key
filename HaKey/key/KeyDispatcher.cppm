@@ -21,13 +21,13 @@ namespace HaKey
 	export class KeyDispatcher : public Core::KeyChainHandler
 	{
 	private:
-		System::ISystemKeyDispatcher *_dispatcher = nullptr;
+		std::unique_ptr<System::ISystemKeyDispatcher> _dispatcher = nullptr;
 		std::shared_ptr<Core::KeyResult> result = std::make_shared<Core::KeyResult>();
 
 	public:
 		void Listen(int linux_device_id = 0)
 		{
-			_dispatcher = new System::LinuxKeyDispatcher([this](Core::Key key)
+			_dispatcher = std::make_unique<System::LinuxKeyDispatcher>([this](Core::Key key)
 														 { this->KeyHandler(key); });
 			_dispatcher->Listen(linux_device_id);
 		}
@@ -49,12 +49,6 @@ namespace HaKey
 		void OnKey(Core::Key key, std::shared_ptr<Core::KeyResult> result) override
 		{
 			next(key, result);
-		}
-
-	public:
-		~KeyDispatcher()
-		{
-			delete _dispatcher;
 		}
 	};
 }
