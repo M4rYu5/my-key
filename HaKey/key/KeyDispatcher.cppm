@@ -21,40 +21,34 @@ namespace HaKey
 	export class KeyDispatcher : public Core::KeyChainHandler
 	{
 	private:
-		System::ISystemKeyDispatcher *_dispatcher = nullptr;
-		std::shared_ptr<Core::KeyResult> result = std::make_shared<Core::KeyResult>();
+		std::unique_ptr<System::ISystemKeyDispatcher> _dispatcher = nullptr;
+		Core::KeyContext context = Core::KeyContext();
 
 	public:
 		void Listen(int linux_device_id = 0)
 		{
-			_dispatcher = new System::LinuxKeyDispatcher([this](Core::KeyEvent key)
+			_dispatcher = std::make_unique<System::LinuxKeyDispatcher>([this](Core::Key key)
 														 { this->KeyHandler(key); });
 			_dispatcher->Listen(linux_device_id);
 		}
 
 	private:
-		void KeyHandler(Core::KeyEvent key)
+		void KeyHandler(Core::Key key)
 		{
-			result->Clear();
-			OnKey(key, result);
+			context.Reset(key);
+			OnKey(context);
 
-			if (!result->suppress_original)
+			if (!context.result.suppress_original)
 			{
-				result->keys.insert(result->keys.begin(), key);
+				context.result.keys.insert(context.result.keys.begin(), key);
 			}
 
-			_dispatcher->Send(result->keys);
+			_dispatcher->Send(context.result.keys);
 		}
 
-		void OnKey(Core::KeyEvent key, std::shared_ptr<Core::KeyResult> result) override
+		void OnKey(Core::KeyContext& context) override
 		{
-			next(key, result);
-		}
-
-	public:
-		~KeyDispatcher()
-		{
-			delete _dispatcher;
+			next(context);
 		}
 	};
 }

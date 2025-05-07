@@ -4,8 +4,9 @@ module;
 
 export module Core:KeyChainHandler;
 
-export import :KeyEvent;
-export import :KeyResult;
+import :Key;
+import :KeyResult;
+import :KeyContext;
 
 namespace HaKey::Core {
 
@@ -13,16 +14,16 @@ namespace HaKey::Core {
 	private:
 		std::unique_ptr<KeyChainHandler> _next = nullptr;
 	protected:
-		void next(KeyEvent key, std::shared_ptr<KeyResult> result){
+		void next(KeyContext& context){
 			if (_next){
-				_next->OnKey(key, result);
+				_next->OnKey(context);
 			}
 		}
 	public:
 		/// <summary>
-		/// Handle the key event. You have to call next(key, result), for key propagation.
+		/// Handle the key event. You have to call next(context), for key propagation.
 		/// </summary>
-		virtual void OnKey(KeyEvent key, std::shared_ptr<KeyResult> result) = 0;
+		virtual void OnKey(KeyContext& context) = 0;
 
 		/// <summary>
 		/// Add a new handler

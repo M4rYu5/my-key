@@ -6,7 +6,7 @@ module;
 export module Layers:HomeRowNavigation;
 
 import Core;
-import VKey;
+import KeyCode;
 import KeyState;
 
 namespace HaKey::Layers
@@ -18,133 +18,133 @@ namespace HaKey::Layers
     private:
         bool _caps_hold = false;
         bool _generated_hotkey = false;
-        std::unordered_set<VKey> active_keys;
+        std::unordered_set<KeyCode> active_keys;
 
     public:
-        void OnKey(Core::KeyEvent key, std::shared_ptr<Core::KeyResult> result) override
+        void OnKey(Core::KeyContext& context) override
         {
             // update
-            HotKeyUpdate(key, result);
+            HotKeyUpdate(context.key, context.result);
             if (!_caps_hold)
             {
-                next(key, result);
+                next(context);
                 return;
             }
 
-            KeySwap(key, result);
+            KeySwap(context.key, context.result);
 
             // propagate
-            next(key, result);
+            next(context);
         }
 
     private:
-        inline void HotKeyUpdate(Core::KeyEvent key, std::shared_ptr<Core::KeyResult> result)
+        inline void HotKeyUpdate(Core::Key key, Core::KeyResult& result)
         {
-            if (IsKeyUp(VKey::CAPSLOCK, key))
+            if (IsKeyUp(KeyCode::CAPSLOCK, key))
             {
                 if (!_generated_hotkey)
                 {
-                    result->AddFullKey(VKey::CAPSLOCK);
+                    result.AddFullKey(KeyCode::CAPSLOCK);
                 }
                 ReleaseActiveKeys(result);
                 _caps_hold = false;
                 _generated_hotkey = false;
             }
-            else if (IsKeyDownOrRepeat(VKey::CAPSLOCK, key))
+            else if (IsKeyDownOrRepeat(KeyCode::CAPSLOCK, key))
             {
                 _caps_hold = true;
-                result->suppress_original = true;
+                result.suppress_original = true;
             }
         }
 
-        void ReleaseActiveKeys(std::shared_ptr<Core::KeyResult> result)
+        void ReleaseActiveKeys(Core::KeyResult& result)
         {
-            for (VKey key : active_keys)
+            for (KeyCode key : active_keys)
             {
-                result->AddKey(key, KeyState::Up);
+                result.AddKey(key, KeyState::Up);
             }
             active_keys.clear();
         }
 
-        inline void KeySwap(Core::KeyEvent key, std::shared_ptr<Core::KeyResult> result)
+        inline void KeySwap(Core::Key key, Core::KeyResult& result)
         {
             // CAPSLOCK & s::LShift
-            if (IsKey(VKey::S, key))
-                Send(VKey::LEFTSHIFT, key.state, result);
+            if (IsKey(KeyCode::S, key))
+                Send(KeyCode::LEFTSHIFT, key.state, result);
 
             // CAPSLOCK & d::LControl
-            if (IsKey(VKey::D, key))
-                Send(VKey::LEFTCTRL, key.state, result);
+            if (IsKey(KeyCode::D, key))
+                Send(KeyCode::LEFTCTRL, key.state, result);
 
             // CAPSLOCK & f::LAlt
-            if (IsKey(VKey::F, key))
-                Send(VKey::LEFTALT, key.state, result);
+            if (IsKey(KeyCode::F, key))
+                Send(KeyCode::LEFTALT, key.state, result);
 
             // CAPSLOCK & j::Left
-            if (IsKey(VKey::J, key))
-                Send(VKey::LEFT, key.state, result);
+            if (IsKey(KeyCode::J, key))
+                Send(KeyCode::LEFT, key.state, result);
 
             // CAPSLOCK & k::Down
-            if (IsKey(VKey::K, key))
-                Send(VKey::DOWN, key.state, result);
+            if (IsKey(KeyCode::K, key))
+                Send(KeyCode::DOWN, key.state, result);
 
             // CAPSLOCK & l::Right
-            if (IsKey(VKey::L, key))
-                Send(VKey::RIGHT, key.state, result);
+            if (IsKey(KeyCode::L, key))
+                Send(KeyCode::RIGHT, key.state, result);
 
             // CAPSLOCK & i::Up
-            if (IsKey(VKey::I, key))
-                Send(VKey::UP, key.state, result);
+            if (IsKey(KeyCode::I, key))
+                Send(KeyCode::UP, key.state, result);
 
             // CAPSLOCK & ;::End
-            if (IsKey(VKey::SEMICOLON, key))
-                Send(VKey::END, key.state, result);
+            if (IsKey(KeyCode::SEMICOLON, key))
+                Send(KeyCode::END, key.state, result);
 
             // CAPSLOCK & h::Home
-            if (IsKey(VKey::H, key))
-                Send(VKey::HOME, key.state, result);
+            if (IsKey(KeyCode::H, key))
+                Send(KeyCode::HOME, key.state, result);
 
             // CAPSLOCK & o::Delete
-            if (IsKey(VKey::O, key))
-                Send(VKey::DELETE, key.state, result);
+            if (IsKey(KeyCode::O, key))
+                Send(KeyCode::DELETE, key.state, result);
 
             // often I press CapsLock and Space, after End hotkey (caps + ;),
             // which will keep the CapsLock ON after relese,
             // this will prevent this behaviour
             // CAPSLOCK & SPACE::SPACE
-            if (IsKey(VKey::SPACE, key))
-                Send(VKey::SPACE, key.state, result);
+            if (IsKey(KeyCode::SPACE, key))
+                Send(KeyCode::SPACE, key.state, result);
         }
 
-        inline void Send(VKey key, KeyState state, std::shared_ptr<Core::KeyResult> result)
+        inline void Send(KeyCode code, KeyState state, Core::KeyResult& result)
         {
-            result->AddKey(key, state);
+            result.AddKey(code, state);
             _generated_hotkey = true;
-            result->suppress_original = true;
+            result.suppress_original = true;
 
             if (state == KeyState::Up)
             {
-                active_keys.erase(key);
+                active_keys.erase(code);
             }
             else if (state == KeyState::Down)
             {
-                active_keys.insert(key);
+                active_keys.insert(code);
             }
         }
 
-        inline bool IsKey(VKey key, Core::KeyEvent event)
+        inline bool IsKey(KeyCode key, Core::Key event)
         {
-            return event.key_code == key;
+            return event.code == key;
         }
 
-        inline bool IsKeyUp(VKey key, Core::KeyEvent event)
+        inline bool IsKeyUp(KeyCode key, Core::Key event)
         {
-            return event.key_code == key && event.state == KeyState::Up;
+            return event.code == key && event.state == KeyState::Up;
         }
 
-        inline bool IsKeyDownOrRepeat(VKey key, Core::KeyEvent event)
+        inline bool IsKeyDownOrRepeat(KeyCode key, Core::Key event)
         {
-            return event.key_code == key && (event.state == KeyState::Down || event.state == KeyState::Repeat);
+            return event.code == key && (event.state == KeyState::Down || event.state == KeyState::Repeat);
         }
     };
 } // namespace HaKey::Layers

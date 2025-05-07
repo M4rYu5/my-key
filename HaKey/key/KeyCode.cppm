@@ -2,13 +2,14 @@ module;
 
 #include <asm-generic/int-ll64.h>
 
-export module VKey;
+export module KeyCode;
 
 namespace HaKey
 {
 
 	// --- LINUX ---
-	export enum VKey : __u16 {
+	export enum KeyCode : __u16 {
+		NONE = 0,
 		ESC = 1,
 		N_1 = 2,
 		N_2 = 3,

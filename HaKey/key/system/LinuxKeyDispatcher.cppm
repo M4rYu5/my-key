@@ -29,7 +29,7 @@ namespace HaKey::System
 		std::vector<input_event> ev_batch;
 
 	public:
-		LinuxKeyDispatcher(std::function<void(Core::KeyEvent)> on_key) : ISystemKeyDispatcher(on_key)
+		LinuxKeyDispatcher(std::function<void(Core::Key)> on_key) : ISystemKeyDispatcher(on_key)
 		{
 			ev_batch.reserve(100);
 		}
@@ -66,7 +66,7 @@ namespace HaKey::System
 					// pass it into the filter
 					if (on_key)
 					{
-						on_key(Core::KeyEvent(ev.code, ev.value));
+						on_key(Core::Key(ev.code, ev.value));
 					}
 				}
 			}
@@ -76,15 +76,15 @@ namespace HaKey::System
 			return;
 		}
 
-		void Send(std::span<Core::KeyEvent> events)
+		void Send(std::span<Core::Key> events)
 		{
 			ev_batch.clear();
-			for (const Core::KeyEvent &key : events)
+			for (const Core::Key &key : events)
 			{
 				ev_batch.push_back({
 					.time = {},
 					.type = EV_KEY,
-					.code = key.key_code,
+					.code = key.code,
 					.value = key.state
 				});
 			}
