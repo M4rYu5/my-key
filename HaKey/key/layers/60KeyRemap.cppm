@@ -46,7 +46,7 @@ namespace HaKey::Layers
     private:
         inline void CapsHotKeyUpdate(Core::Key key, Core::KeyResult& result)
         {
-            if (IsKeyUp(KeyCode::CAPSLOCK, key))
+            if (key.IsUp(KeyCode::CAPSLOCK))
             {
                 if (!_caps_generated_hotkey)
                 {
@@ -56,7 +56,7 @@ namespace HaKey::Layers
                 _caps_hold = false;
                 _caps_generated_hotkey = false;
             }
-            else if (IsKeyDownOrRepeat(KeyCode::CAPSLOCK, key))
+            else if (key.IsDownOrRepeat(KeyCode::CAPSLOCK))
             {
                 _caps_hold = true;
                 result.suppress_original = true;
@@ -65,7 +65,7 @@ namespace HaKey::Layers
 
         inline void RShiftHotKeyUpdate(Core::Key key, Core::KeyResult& result)
         {
-            if (IsKeyUp(KeyCode::RIGHTSHIFT, key))
+            if (key.IsUp(KeyCode::RIGHTSHIFT))
             {
                 if (!_r_shift_generated_hotkey)
                 {
@@ -75,7 +75,7 @@ namespace HaKey::Layers
                 _r_shift_hold = false;
                 _r_shift_generated_hotkey = false;
             }
-            else if (IsKeyDownOrRepeat(KeyCode::RIGHTSHIFT, key))
+            else if (key.IsDownOrRepeat(KeyCode::RIGHTSHIFT))
             {
                 _r_shift_hold = true;
                 result.suppress_original = true;
@@ -97,12 +97,12 @@ namespace HaKey::Layers
 
             // ; Delete / Shift + Delete
             // CapsLock & g::Delete
-            if (IsKey(KeyCode::G, key))
+            if (key.Is(KeyCode::G))
                 CapsSend(KeyCode::DELETE, key.state, result);
 
             // ; stop build (VS) Ctrl + Break
             // CapsLock & q::^CtrlBreak
-            if (IsKeyDownOrRepeat(KeyCode::Q, key))
+            if (key.IsDownOrRepeat(KeyCode::Q))
             {
                 result.AddPressed(KeyCode::LEFTCTRL);
                 result.AddPressed(KeyCode::PAUSE);
@@ -114,66 +114,66 @@ namespace HaKey::Layers
 
             // ; most programs use F2 for renaming
             // CapsLock & 2::F2
-            if (IsKey(KeyCode::N_2, key))
+            if (key.Is(KeyCode::N_2))
                 CapsSend(KeyCode::F2, key.state, result);
 
             // ; most programs use F3 to step over find results
             // CapsLock & 3::F3
-            if (IsKey(KeyCode::N_3, key))
+            if (key.Is(KeyCode::N_3))
                 CapsSend(KeyCode::F3, key.state, result);
 
             // ; F7 and shift F7 is used to switch
             // ; between front-end and back-end files
             // CapsLock & 7::F7
-            if (IsKey(KeyCode::N_7, key))
+            if (key.Is(KeyCode::N_7))
                 CapsSend(KeyCode::F7, key.state, result);
             // ; Alt + F4 => by pressing CapsLock
             // CapsLock & 4::F4
-            if (IsKey(KeyCode::N_4, key))
+            if (key.Is(KeyCode::N_4))
                 CapsSend(KeyCode::F4, key.state, result);
 
             // ; debugging F5, F9, F10, F11, F12
             // CapsLock & 5::F5
-            if (IsKey(KeyCode::N_5, key))
+            if (key.Is(KeyCode::N_5))
                 CapsSend(KeyCode::F5, key.state, result);
             // CapsLock & w::F9
-            if (IsKey(KeyCode::W, key))
+            if (key.Is(KeyCode::W))
                 CapsSend(KeyCode::F9, key.state, result);
             // CapsLock & e::F10
-            if (IsKey(KeyCode::E, key))
+            if (key.Is(KeyCode::E))
                 CapsSend(KeyCode::F10, key.state, result);
             // CapsLock & r::F11
-            if (IsKey(KeyCode::R, key))
+            if (key.Is(KeyCode::R))
                 CapsSend(KeyCode::F11, key.state, result);
             // CapsLock & t::F12
-            if (IsKey(KeyCode::T, key))
+            if (key.Is(KeyCode::T))
                 CapsSend(KeyCode::F12, key.state, result);
 
             // ; no reason for not having F1 and F6-F12 on CapsLock
             // CapsLock & 1::F1
-            if (IsKey(KeyCode::N_1, key))
+            if (key.Is(KeyCode::N_1))
                 CapsSend(KeyCode::F1, key.state, result);
             // CapsLock & 6::F6
-            if (IsKey(KeyCode::N_6, key))
+            if (key.Is(KeyCode::N_6))
                 CapsSend(KeyCode::F6, key.state, result);
             // CapsLock & 8::F8
-            if (IsKey(KeyCode::N_8, key))
+            if (key.Is(KeyCode::N_8))
                 CapsSend(KeyCode::F8, key.state, result);
             // CapsLock & 9::F9
-            if (IsKey(KeyCode::N_9, key))
+            if (key.Is(KeyCode::N_9))
                 CapsSend(KeyCode::F9, key.state, result);
             // CapsLock & 0::F10
-            if (IsKey(KeyCode::N_0, key))
+            if (key.Is(KeyCode::N_0))
                 CapsSend(KeyCode::F10, key.state, result);
             // CapsLock & -::F11
-            if (IsKey(KeyCode::MINUS, key))
+            if (key.Is(KeyCode::MINUS))
                 CapsSend(KeyCode::F11, key.state, result);
             // CapsLock & =::F12
-            if (IsKey(KeyCode::EQUAL, key))
+            if (key.Is(KeyCode::EQUAL))
                 CapsSend(KeyCode::F12, key.state, result);
 
             // CapsLock & \::`
-            if (IsKey(KeyCode::BACKSLASH, key))
+            if (key.Is(KeyCode::BACKSLASH))
                 CapsSend(KeyCode::GRAVE, key.state, result);
         }
 
@@ -182,33 +182,33 @@ namespace HaKey::Layers
             // ; arrows for right hand, using right shift + pl;'
             // >+p::Send {Up down}
             // >+p Up::Send {Up up}
-            if (IsKey(KeyCode::P, key))
+            if (key.Is(KeyCode::P))
                 RShiftSend(KeyCode::UP, key.state, result);
             // >+l::Send {Left down}
             // >+l Up::Send {Left up}
-            if (IsKey(KeyCode::L, key))
+            if (key.Is(KeyCode::L))
                 RShiftSend(KeyCode::LEFT, key.state, result);
             // >+`;::Send {Down down}
             // >+`; Up::Send {Down up}
-            if (IsKey(KeyCode::SEMICOLON, key))
+            if (key.Is(KeyCode::SEMICOLON))
                 RShiftSend(KeyCode::DOWN, key.state, result);
             // >+'::Send {Right down}
             // >+' Up::Send {Right up}
-            if (IsKey(KeyCode::APOSTROPHE, key))
+            if (key.Is(KeyCode::APOSTROPHE))
                 RShiftSend(KeyCode::RIGHT, key.state, result);
 
             // ; sound control, using right shift + ,./
             // >+,::Send {Volume_Down down}
             // >+, Up::Send {Volume_Down up}
-            if (IsKey(KeyCode::COMMA, key))
+            if (key.Is(KeyCode::COMMA))
                 RShiftSend(KeyCode::VOLUMEDOWN, key.state, result);
             // >+.::Send {Volume_Up down}
             // >+. Up::Send {Volume_Up up}
-            if (IsKey(KeyCode::DOT, key))
+            if (key.Is(KeyCode::DOT))
                 RShiftSend(KeyCode::VOLUMEUP, key.state, result);
             // >+/::Send {Volume_Mute down}
             // >+/ Up::Send {Volume_Mute up}
-            if (IsKey(KeyCode::SLASH, key))
+            if (key.Is(KeyCode::SLASH))
                 RShiftSend(KeyCode::MUTE, key.state, result);
         }
 
@@ -242,21 +242,6 @@ namespace HaKey::Layers
             {
                 active_keys.insert(key);
             }
-        }
-
-        inline bool IsKey(KeyCode key, Core::Key event)
-        {
-            return event.code == key;
-        }
-
-        inline bool IsKeyUp(KeyCode key, Core::Key event)
-        {
-            return event.code == key && event.state == KeyState::Up;
-        }
-
-        inline bool IsKeyDownOrRepeat(KeyCode key, Core::Key event)
-        {
-            return event.code == key && (event.state == KeyState::Down || event.state == KeyState::Repeat);
         }
     };
 } // namespace HaKey::Layers

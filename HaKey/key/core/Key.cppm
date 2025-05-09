@@ -23,6 +23,23 @@ namespace HaKey::Core {
 			this->code = (KeyCode)code;
 			this->state = (KeyState)state;
 		}
+
+		
+        inline bool Is(KeyCode key)
+        {
+            return code == key;
+        }
+
+        inline bool IsUp(KeyCode key)
+        {
+            return code == key && state == KeyState::Up;
+        }
+
+        inline bool IsDownOrRepeat(KeyCode key)
+        {
+            return code == key && (state == KeyState::Down || state == KeyState::Repeat);
+        }
+		
 	};
 
 }
