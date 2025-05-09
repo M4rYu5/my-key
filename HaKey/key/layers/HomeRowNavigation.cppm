@@ -24,22 +24,25 @@ namespace HaKey::Layers
         void OnKey(Core::KeyContext& context) override
         {
             // update
-            HotKeyUpdate(context.key, context.result);
+            HotKeyUpdate(context);
             if (!_caps_hold)
             {
                 next(context);
                 return;
             }
 
-            KeySwap(context.key, context.result);
+            KeySwap(context);
 
             // propagate
             next(context);
         }
 
     private:
-        inline void HotKeyUpdate(Core::Key key, Core::KeyResult& result)
+        inline void HotKeyUpdate(Core::KeyContext& context)
         {
+            Core::Key& key = context.key;
+            Core::KeyResult& result = context.result;
+
             if (key.IsUp(KeyCode::CAPSLOCK))
             {
                 if (!_generated_hotkey)
@@ -53,7 +56,7 @@ namespace HaKey::Layers
             else if (key.IsDownOrRepeat(KeyCode::CAPSLOCK))
             {
                 _caps_hold = true;
-                result.suppress_original = true;
+                context.SuppressKey();
             }
         }
 
@@ -66,61 +69,64 @@ namespace HaKey::Layers
             active_keys.clear();
         }
 
-        inline void KeySwap(Core::Key key, Core::KeyResult& result)
+        inline void KeySwap(Core::KeyContext& context)
         {
+            Core::Key& key = context.key;
+            Core::KeyResult& result = context.result;
+
             // CAPSLOCK & s::LShift
             if (key.Is(KeyCode::S))
-                Send(KeyCode::LEFTSHIFT, key.state, result);
+                Send(KeyCode::LEFTSHIFT, key.state, context);
 
             // CAPSLOCK & d::LControl
             if (key.Is(KeyCode::D))
-                Send(KeyCode::LEFTCTRL, key.state, result);
+                Send(KeyCode::LEFTCTRL, key.state, context);
 
             // CAPSLOCK & f::LAlt
             if (key.Is(KeyCode::F))
-                Send(KeyCode::LEFTALT, key.state, result);
+                Send(KeyCode::LEFTALT, key.state, context);
 
             // CAPSLOCK & j::Left
             if (key.Is(KeyCode::J))
-                Send(KeyCode::LEFT, key.state, result);
+                Send(KeyCode::LEFT, key.state, context);
 
             // CAPSLOCK & k::Down
             if (key.Is(KeyCode::K))
-                Send(KeyCode::DOWN, key.state, result);
+                Send(KeyCode::DOWN, key.state, context);
 
             // CAPSLOCK & l::Right
             if (key.Is(KeyCode::L))
-                Send(KeyCode::RIGHT, key.state, result);
+                Send(KeyCode::RIGHT, key.state, context);
 
             // CAPSLOCK & i::Up
             if (key.Is(KeyCode::I))
-                Send(KeyCode::UP, key.state, result);
+                Send(KeyCode::UP, key.state, context);
 
             // CAPSLOCK & ;::End
             if (key.Is(KeyCode::SEMICOLON))
-                Send(KeyCode::END, key.state, result);
+                Send(KeyCode::END, key.state, context);
 
             // CAPSLOCK & h::Home
             if (key.Is(KeyCode::H))
-                Send(KeyCode::HOME, key.state, result);
+                Send(KeyCode::HOME, key.state, context);
 
             // CAPSLOCK & o::Delete
             if (key.Is(KeyCode::O))
-                Send(KeyCode::DELETE, key.state, result);
+                Send(KeyCode::DELETE, key.state, context);
 
             // often I press CapsLock and Space, after End hotkey (caps + ;),
             // which will keep the CapsLock ON after relese,
             // this will prevent this behaviour
             // CAPSLOCK & SPACE::SPACE
             if (key.Is(KeyCode::SPACE))
-                Send(KeyCode::SPACE, key.state, result);
+                Send(KeyCode::SPACE, key.state, context);
         }
 
-        inline void Send(KeyCode code, KeyState state, Core::KeyResult& result)
+        inline void Send(KeyCode code, KeyState state, Core::KeyContext& context)
         {
-            result.AddKey(code, state);
+            context.result.AddKey(code, state);
             _generated_hotkey = true;
-            result.suppress_original = true;
+            context.SuppressKey();
 
             if (state == KeyState::Up)
             {

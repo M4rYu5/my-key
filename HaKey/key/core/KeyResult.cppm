@@ -19,7 +19,6 @@ namespace HaKey::Core
 		std::unordered_set<KeyCode> keys_press_once;
 	
 	public:
-		bool suppress_original = false;
 		std::vector<Key> keys;
 
 		KeyResult()
@@ -67,7 +66,6 @@ namespace HaKey::Core
 
 		inline void Clear()
 		{
-			suppress_original = false;
 			keys.clear();
 			keys_press_once.clear();
 		}
