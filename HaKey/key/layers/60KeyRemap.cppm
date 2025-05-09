@@ -50,7 +50,7 @@ namespace HaKey::Layers
             {
                 if (!_caps_generated_hotkey)
                 {
-                    result.AddFullKey(KeyCode::CAPSLOCK);
+                    result.AddFullKeyOnce(KeyCode::CAPSLOCK);
                 }
                 ReleaseActiveKeys(result);
                 _caps_hold = false;
@@ -69,7 +69,7 @@ namespace HaKey::Layers
             {
                 if (!_r_shift_generated_hotkey)
                 {
-                    result.AddFullKey(KeyCode::RIGHTSHIFT);
+                    result.AddFullKeyOnce(KeyCode::RIGHTSHIFT);
                 }
                 ReleaseActiveKeys(result);
                 _r_shift_hold = false;

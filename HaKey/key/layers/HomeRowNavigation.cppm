@@ -44,7 +44,7 @@ namespace HaKey::Layers
             {
                 if (!_generated_hotkey)
                 {
-                    result.AddFullKey(KeyCode::CAPSLOCK);
+                    result.AddFullKeyOnce(KeyCode::CAPSLOCK);
                 }
                 ReleaseActiveKeys(result);
                 _caps_hold = false;
