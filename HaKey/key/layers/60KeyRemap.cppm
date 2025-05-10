@@ -111,13 +111,16 @@ namespace HaKey::Layers
 
             // ; stop build (VS) Ctrl + Break
             // CapsLock & q::^CtrlBreak
-            if (key.IsDownOrRepeat(KeyCode::Q))
+            if (key.Is(KeyCode::Q))
             {
-                result.AddPressed(KeyCode::LEFTCTRL);
-                result.AddPressed(KeyCode::PAUSE);
-                result.AddReleased(KeyCode::PAUSE);
-                result.AddReleased(KeyCode::LEFTCTRL);
-                _caps_generated_hotkey = true;
+                if (key.IsDownOrRepeat(KeyCode::Q))
+                {
+                    result.AddPressed(KeyCode::LEFTCTRL);
+                    result.AddPressed(KeyCode::PAUSE);
+                    result.AddReleased(KeyCode::PAUSE);
+                    result.AddReleased(KeyCode::LEFTCTRL);
+                    _caps_generated_hotkey = true;
+                }
                 context.SuppressKey();
             }
 
