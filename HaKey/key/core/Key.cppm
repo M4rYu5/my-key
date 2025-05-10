@@ -30,14 +30,19 @@ namespace HaKey::Core {
             return code == key;
         }
 
-        inline bool IsUp(KeyCode key)
+        inline bool IsUp()
         {
-            return code == key && state == KeyState::Up;
+            return state == KeyState::Up;
         }
 
-        inline bool IsDownOrRepeat(KeyCode key)
+		inline bool IsDown()
         {
-            return code == key && (state == KeyState::Down || state == KeyState::Repeat);
+            return state == KeyState::Down;
+        }
+
+        inline bool IsDownOrRepeat()
+        {
+            return state == KeyState::Down || state == KeyState::Repeat;
         }
 		
 	};

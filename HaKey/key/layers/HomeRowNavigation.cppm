@@ -43,7 +43,7 @@ namespace HaKey::Layers
             Core::Key& key = context.key;
             Core::KeyResult& result = context.result;
 
-            if (key.IsUp(KeyCode::CAPSLOCK))
+            if (key.Is(KeyCode::CAPSLOCK) && key.IsUp())
             {
                 if (!_generated_hotkey)
                 {
@@ -53,7 +53,7 @@ namespace HaKey::Layers
                 _caps_hold = false;
                 _generated_hotkey = false;
             }
-            else if (key.IsDownOrRepeat(KeyCode::CAPSLOCK))
+            else if (key.Is(KeyCode::CAPSLOCK) && key.IsDownOrRepeat())
             {
                 _caps_hold = true;
                 context.SuppressKey();

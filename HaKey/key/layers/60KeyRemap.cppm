@@ -23,7 +23,7 @@ namespace HaKey::Layers
         std::unordered_set<KeyCode> active_keys;
 
     public:
-        void OnKey(Core::KeyContext& context) override
+        void OnKey(Core::KeyContext &context) override
         {
             // update
             CapsHotKeyUpdate(context);
@@ -44,12 +44,12 @@ namespace HaKey::Layers
         }
 
     private:
-        inline void CapsHotKeyUpdate(Core::KeyContext& context)
+        inline void CapsHotKeyUpdate(Core::KeyContext &context)
         {
-            Core::Key& key = context.key;
-            Core::KeyResult& result = context.result;
+            Core::Key &key = context.key;
+            Core::KeyResult &result = context.result;
 
-            if (key.IsUp(KeyCode::CAPSLOCK))
+            if (key.Is(KeyCode::CAPSLOCK) && key.IsUp())
             {
                 if (!_caps_generated_hotkey)
                 {
@@ -59,19 +59,19 @@ namespace HaKey::Layers
                 _caps_hold = false;
                 _caps_generated_hotkey = false;
             }
-            else if (key.IsDownOrRepeat(KeyCode::CAPSLOCK))
+            else if (key.Is(KeyCode::CAPSLOCK) && key.IsDownOrRepeat())
             {
                 _caps_hold = true;
                 context.SuppressKey();
             }
         }
 
-        inline void RShiftHotKeyUpdate(Core::KeyContext& context)
+        inline void RShiftHotKeyUpdate(Core::KeyContext &context)
         {
-            Core::Key& key = context.key;
-            Core::KeyResult& result = context.result;
+            Core::Key &key = context.key;
+            Core::KeyResult &result = context.result;
 
-            if (key.IsUp(KeyCode::RIGHTSHIFT))
+            if (key.Is(KeyCode::RIGHTSHIFT) && key.IsUp())
             {
                 if (!_r_shift_generated_hotkey)
                 {
@@ -81,14 +81,14 @@ namespace HaKey::Layers
                 _r_shift_hold = false;
                 _r_shift_generated_hotkey = false;
             }
-            else if (key.IsDownOrRepeat(KeyCode::RIGHTSHIFT))
+            else if (key.Is(KeyCode::RIGHTSHIFT) && key.IsDownOrRepeat())
             {
                 _r_shift_hold = true;
                 context.SuppressKey();
             }
         }
 
-        void ReleaseActiveKeys(Core::KeyResult& result)
+        void ReleaseActiveKeys(Core::KeyResult &result)
         {
             for (KeyCode key : active_keys)
             {
@@ -97,10 +97,10 @@ namespace HaKey::Layers
             active_keys.clear();
         }
 
-        inline void CapsKeySwap(Core::KeyContext& context)
+        inline void CapsKeySwap(Core::KeyContext &context)
         {
-            Core::Key& key = context.key;
-            Core::KeyResult& result = context.result;
+            Core::Key &key = context.key;
+            Core::KeyResult &result = context.result;
 
             // ; for 60% keyboard
 
@@ -113,7 +113,7 @@ namespace HaKey::Layers
             // CapsLock & q::^CtrlBreak
             if (key.Is(KeyCode::Q))
             {
-                if (key.IsDownOrRepeat(KeyCode::Q))
+                if (key.IsDownOrRepeat())
                 {
                     result.AddPressed(KeyCode::LEFTCTRL);
                     result.AddPressed(KeyCode::PAUSE);
@@ -189,10 +189,10 @@ namespace HaKey::Layers
                 CapsSend(KeyCode::GRAVE, key.state, context);
         }
 
-        inline void RShiftKeySwap(Core::KeyContext& context)
+        inline void RShiftKeySwap(Core::KeyContext &context)
         {
-            Core::Key& key = context.key;
-            Core::KeyResult& result = context.result;
+            Core::Key &key = context.key;
+            Core::KeyResult &result = context.result;
 
             // ; arrows for right hand, using right shift + pl;'
             // >+p::Send {Up down}
@@ -227,7 +227,7 @@ namespace HaKey::Layers
                 RShiftSend(KeyCode::MUTE, key.state, context);
         }
 
-        inline void CapsSend(KeyCode key, KeyState state, Core::KeyContext& context)
+        inline void CapsSend(KeyCode key, KeyState state, Core::KeyContext &context)
         {
             context.result.AddKey(key, state);
             _caps_generated_hotkey = true;
@@ -243,7 +243,7 @@ namespace HaKey::Layers
             }
         }
 
-        inline void RShiftSend(KeyCode key, KeyState state, Core::KeyContext& context)
+        inline void RShiftSend(KeyCode key, KeyState state, Core::KeyContext &context)
         {
             context.result.AddKey(key, state);
             _r_shift_generated_hotkey = true;
