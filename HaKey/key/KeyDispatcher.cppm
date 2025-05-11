@@ -44,6 +44,7 @@ namespace HaKey
 			}
 
 			_dispatcher->Send(context.result.keys);
+			context.state.OnLateKeyEvent(key);
 		}
 
 		void OnKey(Core::KeyContext& context) override

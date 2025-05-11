@@ -45,13 +45,12 @@ namespace HaKey::Layers
 
             if (key.Is(KeyCode::CAPSLOCK) && key.IsUp())
             {
-                if (!_generated_hotkey)
+                if (!context.state.GeneratedHotKey(KeyCode::CAPSLOCK))
                 {
                     result.AddFullKeyOnce(KeyCode::CAPSLOCK);
                 }
                 ReleaseActiveKeys(result);
                 _caps_hold = false;
-                _generated_hotkey = false;
             }
             else if (key.Is(KeyCode::CAPSLOCK) && key.IsDownOrRepeat())
             {
@@ -125,7 +124,7 @@ namespace HaKey::Layers
         inline void Send(KeyCode code, KeyState state, Core::KeyContext& context)
         {
             context.result.AddKey(code, state);
-            _generated_hotkey = true;
+            context.state.AddGeneratedHotKey(KeyCode::CAPSLOCK);
             context.SuppressKey();
 
             if (state == KeyState::Up)

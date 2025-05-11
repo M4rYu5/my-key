@@ -7,6 +7,7 @@ export module Core:KeyContext;
 
 import :Key;
 import :KeyResult;
+import :KeyShare;
 
 
 namespace HaKey::Core {
@@ -17,6 +18,8 @@ namespace HaKey::Core {
         public:
             Key key;
             KeyResult result;
+            /// @brief Contains shared states of different type of keys.
+            KeyShare state;
 
 
             inline void SuppressKey(){
