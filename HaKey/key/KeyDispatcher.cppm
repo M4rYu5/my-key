@@ -38,12 +38,13 @@ namespace HaKey
 			context.Reset(key);
 			OnKey(context);
 
-			if (!context.result.suppress_original)
+			if (!context.IsKeySuppressed())
 			{
 				context.result.keys.insert(context.result.keys.begin(), key);
 			}
 
 			_dispatcher->Send(context.result.keys);
+			context.state.OnLateKeyEvent(key);
 		}
 
 		void OnKey(Core::KeyContext& context) override
