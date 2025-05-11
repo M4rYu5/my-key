@@ -5,6 +5,7 @@ module;
 
 export module Layers:HomeRowNavigation;
 
+import :BaseHotKeyLayer;
 import Core;
 import KeyCode;
 import KeyState;
@@ -13,61 +14,23 @@ namespace HaKey::Layers
 {
     namespace Core = HaKey::Core;
 
-    export class HomeRowNavigation : public Core::KeyChainHandler
+    export class HomeRowNavigation : public BaseHotKeyLayer
     {
-    private:
-        bool _caps_hold = false;
-        bool _generated_hotkey = false;
-        std::unordered_set<KeyCode> active_keys;
-
     public:
         void OnKey(Core::KeyContext& context) override
         {
             // update
-            HotKeyUpdate(context);
-            if (!_caps_hold)
-            {
-                next(context);
-                return;
-            }
+            HotKeyUpdate(context, KeyCode::CAPSLOCK);
 
-            KeySwap(context);
+            if (!context.key.Is(KeyCode::CAPSLOCK) && context.state.IsKeyDown(KeyCode::CAPSLOCK)){
+                KeySwap(context);
+            }
 
             // propagate
             next(context);
         }
 
     private:
-        inline void HotKeyUpdate(Core::KeyContext& context)
-        {
-            Core::Key& key = context.key;
-            Core::KeyResult& result = context.result;
-
-            if (key.Is(KeyCode::CAPSLOCK) && key.IsUp())
-            {
-                if (!context.state.GeneratedHotKey(KeyCode::CAPSLOCK))
-                {
-                    result.AddFullKeyOnce(KeyCode::CAPSLOCK);
-                }
-                ReleaseActiveKeys(result);
-                _caps_hold = false;
-            }
-            else if (key.Is(KeyCode::CAPSLOCK) && key.IsDownOrRepeat())
-            {
-                _caps_hold = true;
-                context.SuppressKey();
-            }
-        }
-
-        void ReleaseActiveKeys(Core::KeyResult& result)
-        {
-            for (KeyCode key : active_keys)
-            {
-                result.AddKey(key, KeyState::Up);
-            }
-            active_keys.clear();
-        }
-
         inline void KeySwap(Core::KeyContext& context)
         {
             Core::Key& key = context.key;
@@ -75,66 +38,50 @@ namespace HaKey::Layers
 
             // CAPSLOCK & s::LShift
             if (key.Is(KeyCode::S))
-                Send(KeyCode::LEFTSHIFT, key.state, context);
+                Send(KeyCode::LEFTSHIFT, key.state, context, KeyCode::CAPSLOCK);
 
             // CAPSLOCK & d::LControl
             if (key.Is(KeyCode::D))
-                Send(KeyCode::LEFTCTRL, key.state, context);
+                Send(KeyCode::LEFTCTRL, key.state, context, KeyCode::CAPSLOCK);
 
             // CAPSLOCK & f::LAlt
             if (key.Is(KeyCode::F))
-                Send(KeyCode::LEFTALT, key.state, context);
+                Send(KeyCode::LEFTALT, key.state, context, KeyCode::CAPSLOCK);
 
             // CAPSLOCK & j::Left
             if (key.Is(KeyCode::J))
-                Send(KeyCode::LEFT, key.state, context);
+                Send(KeyCode::LEFT, key.state, context, KeyCode::CAPSLOCK);
 
             // CAPSLOCK & k::Down
             if (key.Is(KeyCode::K))
-                Send(KeyCode::DOWN, key.state, context);
+                Send(KeyCode::DOWN, key.state, context, KeyCode::CAPSLOCK);
 
             // CAPSLOCK & l::Right
             if (key.Is(KeyCode::L))
-                Send(KeyCode::RIGHT, key.state, context);
+                Send(KeyCode::RIGHT, key.state, context, KeyCode::CAPSLOCK);
 
             // CAPSLOCK & i::Up
             if (key.Is(KeyCode::I))
-                Send(KeyCode::UP, key.state, context);
+                Send(KeyCode::UP, key.state, context, KeyCode::CAPSLOCK);
 
             // CAPSLOCK & ;::End
             if (key.Is(KeyCode::SEMICOLON))
-                Send(KeyCode::END, key.state, context);
+                Send(KeyCode::END, key.state, context, KeyCode::CAPSLOCK);
 
             // CAPSLOCK & h::Home
             if (key.Is(KeyCode::H))
-                Send(KeyCode::HOME, key.state, context);
+                Send(KeyCode::HOME, key.state, context, KeyCode::CAPSLOCK);
 
             // CAPSLOCK & o::Delete
             if (key.Is(KeyCode::O))
-                Send(KeyCode::DELETE, key.state, context);
+                Send(KeyCode::DELETE, key.state, context, KeyCode::CAPSLOCK);
 
             // often I press CapsLock and Space, after End hotkey (caps + ;),
             // which will keep the CapsLock ON after relese,
             // this will prevent this behaviour
             // CAPSLOCK & SPACE::SPACE
             if (key.Is(KeyCode::SPACE))
-                Send(KeyCode::SPACE, key.state, context);
-        }
-
-        inline void Send(KeyCode code, KeyState state, Core::KeyContext& context)
-        {
-            context.result.AddKey(code, state);
-            context.state.AddGeneratedHotKey(KeyCode::CAPSLOCK);
-            context.SuppressKey();
-
-            if (state == KeyState::Up)
-            {
-                active_keys.erase(code);
-            }
-            else if (state == KeyState::Down)
-            {
-                active_keys.insert(code);
-            }
+                Send(KeyCode::SPACE, key.state, context, KeyCode::CAPSLOCK);
         }
 
     };

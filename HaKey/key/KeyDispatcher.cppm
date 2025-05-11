@@ -36,6 +36,7 @@ namespace HaKey
 		void KeyHandler(Core::Key key)
 		{
 			context.Reset(key);
+			context.state.OnEarlyKeyEvent(key);
 			OnKey(context);
 
 			if (!context.IsKeySuppressed())
