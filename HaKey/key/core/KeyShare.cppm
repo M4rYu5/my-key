@@ -26,6 +26,9 @@ namespace HaKey::Core
         /// @brief Increment shared resource that keeps track of keys that have generated a HotKey between layers;
         void AddGeneratedHotKey(KeyCode tracked_key_code)
         {
+            if (tracked_key_code == KeyCode::NONE){
+                return;
+            }
             generated_hotkey[tracked_key_code] += 1;
         }
 
