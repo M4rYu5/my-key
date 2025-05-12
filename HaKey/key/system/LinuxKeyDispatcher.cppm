@@ -1,5 +1,7 @@
 module;
 
+#if LINUX
+
 #include <cstring>
 #include <functional>
 #include <iostream>
@@ -12,8 +14,11 @@ module;
 #include <linux/input.h>
 #include <linux/uinput.h>
 #include <sys/ioctl.h>
+#endif
 
 export module System:Linux;
+
+#if LINUX
 
 import Core;
 import :System;
@@ -128,3 +133,5 @@ namespace HaKey::System
 	};
 
 }
+
+#endif

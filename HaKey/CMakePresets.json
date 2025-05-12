@@ -20,7 +20,7 @@
       "cacheVariables": {
         "CMAKE_C_COMPILER": "cl.exe",
         "CMAKE_CXX_COMPILER": "cl.exe",
-        "WINDOWS":  true
+        "CMAKE_SYSTEM_NAME": "Windows"
       },
       "condition": {
         "type": "equals",
@@ -37,7 +37,7 @@
       "cacheVariables": {
         "CMAKE_C_COMPILER": "clang",
         "CMAKE_CXX_COMPILER": "clang++",
-        "WINDOWS": true
+        "CMAKE_SYSTEM_NAME": "Windows"
       },
       "condition": {
         "type": "equals",
@@ -117,7 +117,7 @@
         "CMAKE_CXX_COMPILER": "/usr/bin/clang++",
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
         "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}",
-        "LINUX":  true
+        "CMAKE_SYSTEM_NAME": "Linux"
       },
       "condition": {
         "type": "equals",
@@ -137,7 +137,8 @@
       "binaryDir": "${sourceDir}/out/build/${presetName}",
       "installDir": "${sourceDir}/out/install/${presetName}",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug"
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_SYSTEM_NAME": "Darwin"
       },
       "condition": {
         "type": "equals",

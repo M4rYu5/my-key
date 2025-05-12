@@ -28,9 +28,12 @@ namespace HaKey
 			Add(std::move(propagate));
 
 			// init system dispatcher
+#if LINUX
 			_dispatcher = std::make_unique<System::LinuxKeyDispatcher>([this](Core::Key key)
 																	   { this->KeyHandler(key); });
 			_dispatcher->Listen(linux_device_id);
+#endif
+
 		}
 
 	private:

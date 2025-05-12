@@ -16,11 +16,11 @@
 #set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 
-if (WIN32)
+if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
   add_compile_definitions(WINDOWS)
-elseif(UNIX)
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
   add_compile_definitions(LINUX)
-elseif(APPLE)
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   add_compile_definitions(MACOS)
 endif()
 

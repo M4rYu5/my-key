@@ -1,6 +1,8 @@
 module;
 
+#if LINUX
 #include <asm-generic/int-ll64.h>
+#endif
 
 export module KeyCode;
 
@@ -8,7 +10,11 @@ namespace HaKey
 {
 
 	// --- LINUX ---
-	export enum KeyCode : __u16 {
+	export enum KeyCode 
+#if LINUX
+	: __u16  
+#endif
+	{
 		NONE = 0,
 		ESC = 1,
 		N_1 = 2,
