@@ -14,6 +14,7 @@ export module KeyDispatcher;
 
 import Core;
 import System;
+import Layers;
 
 namespace HaKey
 {
@@ -27,8 +28,13 @@ namespace HaKey
 	public:
 		void Listen(int linux_device_id = 0)
 		{
+			// propagate keys that are pressed in combination with HotKeys, keeping modifiers
+			std::unique_ptr<Core::KeyChainHandler> propagate = std::make_unique<Layers::PropagateKey>();
+			Add(std::move(propagate));
+
+			// init system dispatcher
 			_dispatcher = std::make_unique<System::LinuxKeyDispatcher>([this](Core::Key key)
-														 { this->KeyHandler(key); });
+																	   { this->KeyHandler(key); });
 			_dispatcher->Listen(linux_device_id);
 		}
 
@@ -37,20 +43,17 @@ namespace HaKey
 		{
 			context.Reset(key);
 			context.state.OnEarlyKeyEvent(key);
-			OnKey(context);
 
-			if (!context.IsKeySuppressed())
-			{
-				context.result.keys.insert(context.result.keys.begin(), key);
-			}
+			OnKey(context);
 
 			_dispatcher->Send(context.result.keys);
 			context.state.OnLateKeyEvent(key);
 		}
 
-		void OnKey(Core::KeyContext& context) override
+		void OnKey(Core::KeyContext &context) override
 		{
 			next(context);
 		}
+
 	};
-}
+} // HaKey namespace
