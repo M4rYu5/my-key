@@ -4,11 +4,6 @@ module;
 #include <iostream>
 #include <cstring>
 
-#include <fcntl.h>
-#include <unistd.h>
-#include <linux/input.h>
-#include <linux/uinput.h>
-#include <sys/ioctl.h>
 
 export module KeyDispatcher;
 
