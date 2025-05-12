@@ -2,10 +2,11 @@
 
 
 # Enable Hot Reload for MSVC compilers if supported.
-if (POLICY CMP0141)
-  cmake_policy(SET CMP0141 NEW)
-  set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "$<IF:$<AND:$<C_COMPILER_ID:MSVC>,$<CXX_COMPILER_ID:MSVC>>,$<$<CONFIG:Debug,RelWithDebInfo>:EditAndContinue>,$<$<CONFIG:Debug,RelWithDebInfo>:ProgramDatabase>>")
-endif()
+#   fails when compiling from windows with clang
+# if (POLICY CMP0141)
+#   cmake_policy(SET CMP0141 NEW)
+#   set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "$<IF:$<AND:$<C_COMPILER_ID:MSVC>,$<CXX_COMPILER_ID:MSVC>>,$<$<CONFIG:Debug,RelWithDebInfo>:EditAndContinue>,$<$<CONFIG:Debug,RelWithDebInfo>:ProgramDatabase>>")
+# endif()
 
 # --- SUPPOSED TO AUTOMATICALLY SEARCH FOR MODULES, BUT ONLY WORKS FOR LINUX  ---
     #set(CMAKE_CXX_COMPILER "clang++")
@@ -13,6 +14,16 @@ endif()
     #set(CMAKE_CXX_SCAN_FOR_MODULES ON)
 # --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 #set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+
+if (WIN32)
+  add_compile_definitions(WINDOWS)
+elseif(UNIX)
+  add_compile_definitions(LINUX)
+elseif(APPLE)
+  add_compile_definitions(MACOS)
+endif()
+
 
 
 set(CMAKE_CXX_STANDARD 20)
