@@ -33,7 +33,7 @@ Please note that these scripts are designed for personal use and may need to be 
 ## HaKey (app)
 The [HaKey](HaKey/) application was created as an alternative to AHK for Linux[^1]. 
 
-Stack:
+### Stack:
 - Written in C++ for performance and compatibility reasons 🏃‍♂️
 - Created with modules for fast development and sanity 😇
 - Used CMake and Clang, to be able to build from any platform. 👽
@@ -41,5 +41,14 @@ Stack:
 - Non user-configurable; layers are hard-coded for my needs:
   - [`homeRowNavigation.ahk`](scripts/homeRowNavigation.ahk) in [HomeRowNavigation.cppm](HaKey/key/layers/HomeRowNavigation.cppm)
   - [`60pKeyRemap.ahk`](scripts/60pKeyRemap.ahk) in [60KeyRemap.cppm](HaKey/key/layers/60KeyRemap.cppm)
+
+### Commands:
+- CMake: `sudo apt install cmake`
+- CLang tools: `sudo apt install clang-tools`
+- __Build__: `cmake -G Ninja -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang .`
+- __FAIL TO READ IO__ (input / uinput):
+  - You need permissions to read the input: `sudo chmod +r /dev/input/event0`, change 0 with your input index from: `cat /proc/bus/input/devices`
+  - and write in uinput: `sudo chmod a+rw /dev/uinput`
+
 
 [^1]: Support for Windows and (probably) MacOS can be added, but it's not planned.
