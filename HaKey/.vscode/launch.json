@@ -38,7 +38,7 @@
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/out/build/x64-debug",
             "environment": [],
-            "console": "internalConsole",
+            "console": "externalTerminal",
             "preLaunchTask": "CMake build debug windows",
         }
     ]
