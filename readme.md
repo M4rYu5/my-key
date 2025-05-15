@@ -31,7 +31,7 @@ Please note that these scripts are designed for personal use and may need to be 
 
 
 ## HaKey (app)
-The [HaKey](HaKey/) application was created as an alternative to AHK for Linux[^1]. 
+The [HaKey](HaKey/) application was created as an alternative to AHK. Currently supporting Linux and Windows [^1].
 
 ### Stack:
 - Written in C++ for performance and compatibility reasons 🏃‍♂️
@@ -51,4 +51,4 @@ The [HaKey](HaKey/) application was created as an alternative to AHK for Linux[^
   - and write in uinput: `sudo chmod a+rw /dev/uinput`
 
 
-[^1]: Support for Windows and (probably) MacOS can be added, but it's not planned.
+[^1]: Support for MacOS can be added (probably), but it's not planned.
