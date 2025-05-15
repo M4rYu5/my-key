@@ -4,11 +4,6 @@ module;
 #include <iostream>
 #include <cstring>
 
-#include <fcntl.h>
-#include <unistd.h>
-#include <linux/input.h>
-#include <linux/uinput.h>
-#include <sys/ioctl.h>
 
 export module KeyDispatcher;
 
@@ -33,9 +28,15 @@ namespace HaKey
 			Add(std::move(propagate));
 
 			// init system dispatcher
+#if LINUX
 			_dispatcher = std::make_unique<System::LinuxKeyDispatcher>([this](Core::Key key)
 																	   { this->KeyHandler(key); });
 			_dispatcher->Listen(linux_device_id);
+#endif
+#if WINDOWS
+			_dispatcher = std::make_unique<System::WindowsKeyDispatcher>([this](Core::Key key) { this->KeyHandler(key); });
+			_dispatcher->Listen();
+#endif
 		}
 
 	private:

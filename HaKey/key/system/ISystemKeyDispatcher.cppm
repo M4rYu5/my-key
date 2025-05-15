@@ -5,11 +5,6 @@ module;
 #include <span>
 #include <functional>
 
-#include <fcntl.h>
-#include <unistd.h>
-#include <linux/input.h>
-#include <linux/uinput.h>
-#include <sys/ioctl.h>
 
 export module System:System;
 

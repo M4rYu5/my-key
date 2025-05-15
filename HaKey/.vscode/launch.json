@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "(gdb) Launch",
+            "name": "(gdb) Launch linux",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/out/build/linux-debug/HaKey",
@@ -15,7 +15,7 @@
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
-            "preLaunchTask": "CMake build debug",
+            "preLaunchTask": "CMake build debug linux",
             "setupCommands": [
                 {
                     "description": "Enable pretty-printing for gdb",
@@ -28,6 +28,18 @@
                     "ignoreFailures": true
                 }
             ]
+        },
+        {
+            "name": "(gdb) Launch windows",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/out/build/x64-debug/HaKey.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/out/build/x64-debug",
+            "environment": [],
+            "console": "externalTerminal",
+            "preLaunchTask": "CMake build debug windows",
         }
     ]
 }
