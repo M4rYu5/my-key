@@ -1,6 +1,4 @@
-﻿// TODO: Delete /lib/libevdev library. I don't think I'm gonna need it anymore.
-
-#include <memory>
+﻿#include <memory>
 #include <iostream>
 #include <cstdlib>
 

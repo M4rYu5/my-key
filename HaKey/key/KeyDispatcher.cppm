@@ -33,7 +33,10 @@ namespace HaKey
 																	   { this->KeyHandler(key); });
 			_dispatcher->Listen(linux_device_id);
 #endif
-
+#if WINDOWS
+			_dispatcher = std::make_unique<System::WindowsKeyDispatcher>([this](Core::Key key) { this->KeyHandler(key); });
+			_dispatcher->Listen();
+#endif
 		}
 
 	private:
