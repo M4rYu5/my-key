@@ -2,7 +2,7 @@
 
 This repository contains:
   - a collection of my personal [AutoHotkey (AHK v1.1)](https://www.autohotkey.com/) scripts.
-  - HaKey, a C++ application that is implementing _most of_ my AHK Script's functionality on Linux[^1].
+  - HaKey, a C++ application that is implementing _most of_ my AHK Script's functionality.
 
 ## Layout
 A representation of changes in a 60% keyboard. Note that alternative layers are not displayed.
