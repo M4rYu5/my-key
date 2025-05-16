@@ -45,8 +45,11 @@ The [HaKey](HaKey/) application was created as an alternative to AHK. Currently 
 ### Commands:
 - CMake: `sudo apt install cmake`
 - CLang tools: `sudo apt install clang-tools`
-- __Build__: `cmake -G Ninja -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang .`
-- __FAIL TO READ IO__ (input / uinput):
+- __Build__:
+  - Windows (VS): `cmake --preset=x64-release` & `cmake --build --preset=x64-release`
+  - Windows (Clang): `cmake --preset=x64-release-clang` & `cmake --build --preset=x64-release-clang`
+  - Linux (Clang): `cmake --preset=linux-release` & `cmake --build --preset=linux-release`
+- __FAIL TO READ IO__ (input / uinput) on __LINUX__:
   - You need permissions to read the input: `sudo chmod +r /dev/input/event0`, change 0 with your input index from: `cat /proc/bus/input/devices`
   - and write in uinput: `sudo chmod a+rw /dev/uinput`
 
