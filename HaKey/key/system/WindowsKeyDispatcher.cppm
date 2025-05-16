@@ -14,10 +14,9 @@ module;
 export module System:Windows;
 
 
-import Core;
 import :System;
-
-
+import KeyState;
+import Core;
 
 
 
