@@ -1,17 +1,17 @@
-# My AHK Scripts
+# My Key
 
 This repository contains:
-  - a collection of my personal [AutoHotkey (AHK v1.1)](https://www.autohotkey.com/) scripts.
-  - HaKey, a C++ application that is implementing _most of_ my AHK Script's functionality.
+  - A collection of my personal [AutoHotkey (AHK v1.1)](https://www.autohotkey.com/) scripts, in [/scripts](/scripts).
+  - HaKey, a C++ application that is implementing _most of_ my AHK Script's functionality, in [/HaKey](/HaKey).
 
 ## Layout
-A representation of changes in a 60% keyboard. Note that alternative layers are not displayed.
+A representation of changes in a 60% keyboard (alternative layers are not displayed).
 
 ![image](keyboard.png)
 
 ## Scripts (AHK, windows)
 
-Here is a list of the scripts and a brief description of each:
+List of scripts:
 
 - [`main.ahk`](scripts/main.ahk): The main script that includes all other scripts. I'm using `Task Scheduler` to run this script at user log on.
 
