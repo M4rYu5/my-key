@@ -1,3 +1,4 @@
+#if WINDOWS
 module;
 
 #include <cstring>
@@ -7,13 +8,12 @@ module;
 #include <span>
 #include <vector>
 
-#if WINDOWS
 #include <windows.h>
 #endif
 
 export module System:Windows;
 
-
+#if WINDOWS
 import :System;
 import KeyState;
 import Core;
@@ -22,8 +22,6 @@ import Core;
 
 namespace HaKey::System
 {
-
-#if WINDOWS
 	namespace WindowsHooks {
 		// Keyboard hook handle
 		HHOOK hKeyboardHook;
@@ -46,7 +44,6 @@ namespace HaKey::System
 			return CallNextHookEx(hKeyboardHook, nCode, wParam, lParam);
 		}
 	} //namespace WindowsHooks
-#endif
 
 	export class WindowsKeyDispatcher : public ISystemKeyDispatcher
 	{
@@ -57,15 +54,12 @@ namespace HaKey::System
 		/// @brief Only one instance at a time is supported.
 		WindowsKeyDispatcher(std::function<void(Core::Key)> on_key) : ISystemKeyDispatcher(on_key)
 		{
-#if WINDOWS
 			ev_batch.reserve(100);
 			WindowsHooks::on_key = on_key;
-#endif
 		}
 
 		void Listen(int device_id = 0)
 		{
-#if WINDOWS
 			// Install the hook
 			WindowsHooks::hKeyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, WindowsHooks::LowLevelKeyboardProc, NULL, 0);
 
@@ -84,12 +78,10 @@ namespace HaKey::System
 			// I don't think it will reach this line of code.
 			UnhookWindowsHookEx(WindowsHooks::hKeyboardHook);
 			return;
-#endif
 		}
 
 		void Send(std::span<Core::Key> events)
 		{
-#if WINDOWS
 			ev_batch.clear();
 			for (const Core::Key& key : events)
 			{
@@ -102,7 +94,6 @@ namespace HaKey::System
 			}
 			// write events
 			SendInput(ev_batch.size(), ev_batch.data(), sizeof(INPUT));
-#endif
 		}
 
 	private:
@@ -111,9 +102,7 @@ namespace HaKey::System
 	public:
 		~WindowsKeyDispatcher()
 		{
-#if WINDOWS
 			WindowsHooks::on_key = nullptr;
-#endif
 		}
 
 
@@ -122,3 +111,4 @@ namespace HaKey::System
 
 }
 
+#endif
