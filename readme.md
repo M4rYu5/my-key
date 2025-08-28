@@ -49,9 +49,16 @@ The [HaKey](HaKey/) application was created as an alternative to AHK. Currently 
   - Windows (VS): `cmake --preset=x64-release` & `cmake --build --preset=x64-release`
   - Windows (Clang): `cmake --preset=x64-release-clang` & `cmake --build --preset=x64-release-clang`
   - Linux (Clang): `cmake --preset=linux-release` & `cmake --build --preset=linux-release`
-- __FAIL TO READ IO__ (input / uinput) on __LINUX__:
-  - You need permissions to read the input: `sudo chmod +r /dev/input/event0`, change 0 with your input index from: `cat /proc/bus/input/devices`
-  - and write in uinput: `sudo chmod a+rw /dev/uinput`
-
+- __Troubleshooting__ (Linux):
+  - __FAIL TO READ IO__ (input / uinput):
+    - You need permissions:
+      - to read the input `sudo chmod +r /dev/input/event0`, change 0 with your input index from: `cat /proc/bus/input/devices`
+        - if you're not sure which one is the keyboard you can use `sudo apt install input-utils` and probe each device with `sudo input-events 1`
+      - and write in uinput: `sudo chmod a+rw /dev/uinput`
+  - __Missing `/dev/uinput`__ (Kubuntu 25.04)
+    - If `modinfo uinput` prints nothing, your kernel is missing the _uinput_ module. 
+    - You can try `sudo apt update && sudo apt upgrade` and reboot, but this only works if a new kernel including _uinput_ is available.
+    - The solution is to install the missing modules: `sudo apt install linux-modules-extra-$(uname -r)` then reboot.
+    - On non-Ubuntu-based distributions, you’ll need to use or install a kernel containing the _uinput_ module.
 
 [^1]: Support for MacOS can be added (probably), but it's not planned.
