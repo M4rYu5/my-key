@@ -20,6 +20,10 @@
     {
       "name": "x64-release-clang",
       "configurePreset": "x64-release-clang"
+    },
+    {
+      "name": "x64-debug-clang",
+      "configurePreset": "x64-debug-clang"
     }
   ],
   "configurePresets": [

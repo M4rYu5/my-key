@@ -1,24 +1,52 @@
 {
     "version": "2.0.0",
     "tasks": [
-      {
-        "label": "CMake build debug linux",
-        "type": "shell",
-        "command": "cmake",
-        "args": [
-          "--build", "build",
-          "--preset", "linux-debug"
-        ],
-        "problemMatcher": []
-      },
-      {
-        "label": "CMake build debug windows",
-        "type": "shell",
-        "command": "cmake",
-        "args": [
-          "--preset", "x64-debug-clang"
-        ],
-        "problemMatcher": []
-      }
+        {
+            "label": "Configure: Linux Debug (Clang)",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "--preset", "linux-debug"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "Build: Linux Debug (Clang)",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "--build", "out/build/linux-debug"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "dependsOn": [
+                "Configure: Linux Debug (Clang)"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "Configure: Windows Debug (Clang)",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "--preset", "x64-debug-clang"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "Build: Windows Debug (Clang)",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "--build", "out/build/x64-debug-clang" 
+            ],
+            "group": "build",
+            "dependsOn": [
+                "Configure: Windows Debug (Clang)"
+            ],
+            "problemMatcher": []
+        }
     ]
-  }
+}
