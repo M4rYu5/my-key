@@ -1,5 +1,5 @@
-#if WINDOWS
 module;
+#if WINDOWS
 
 #include <cstring>
 #include <functional>
