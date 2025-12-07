@@ -41,7 +41,7 @@ namespace HaKey::System
 
 		void Listen(int device_id = 0)
 		{
-			std::string dev_path = "/dev/input/event" + std::to_string(device_id); // your input device
+			std::string dev_path = "/dev/input/event" + std::to_string(device_id);
 			int input_fd = open(dev_path.c_str(), O_RDONLY);
 			if (input_fd < 0)
 			{
@@ -49,9 +49,14 @@ namespace HaKey::System
 				return;
 			}
 
+			while (is_key_pressed(input_fd, KEY_ENTER)) {
+				std::this_thread::sleep_for(std::chrono::milliseconds(10)); 
+			}
+
 			if (ioctl(input_fd, EVIOCGRAB, 1) < 0)
 			{
 				std::cerr << "Failed to grab input device\n";
+				close(input_fd);
 				return;
 			}
 
@@ -63,12 +68,10 @@ namespace HaKey::System
 				{
 					if (ev.type != EV_KEY)
 					{
-						// forward everything that isn't a key to the virtual keyboard
 						write(uinput_fd, &ev, sizeof(ev));
 						continue;
 					}
 
-					// pass it into the filter
 					if (on_key)
 					{
 						on_key(Core::Key(ev.code, ev.value));
@@ -78,7 +81,6 @@ namespace HaKey::System
 
 			ioctl(input_fd, EVIOCGRAB, 0);
 			close(input_fd);
-			return;
 		}
 
 		void Send(std::span<Core::Key> events)
@@ -93,13 +95,21 @@ namespace HaKey::System
 					.value = key.state
 				});
 			}
-			// add sync event
 			ev_batch.push_back(sync_ev);
-			// write events
 			write(uinput_fd, ev_batch.data(), ev_batch.size() * sizeof(input_event));
 		}
 
 	private:
+		bool is_key_pressed(int fd, unsigned int key_code) {
+			char key_states[KEY_MAX/8 + 1];
+			memset(key_states, 0, sizeof(key_states));
+			
+			if (ioctl(fd, EVIOCGKEY(sizeof(key_states)), key_states) < 0) {
+				return false;
+			}
+			return (key_states[key_code / 8] & (1 << (key_code % 8))) != 0;
+		}
+
 		int setup_uinput_device()
 		{
 			int ufd = open("/dev/uinput", O_WRONLY | O_NONBLOCK);

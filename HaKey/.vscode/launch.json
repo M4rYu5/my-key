@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "(gdb) Launch linux",
+            "name": "Launch linux (clang)",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/out/build/linux-debug/HaKey",
@@ -13,33 +13,22 @@
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/out/build/linux-debug",
             "environment": [],
-            "externalConsole": false,
-            "MIMode": "gdb",
-            "preLaunchTask": "CMake build debug linux",
-            "setupCommands": [
-                {
-                    "description": "Enable pretty-printing for gdb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                },
-                {
-                    "description": "Set Disassembly Flavor to Intel",
-                    "text": "-gdb-set disassembly-flavor intel",
-                    "ignoreFailures": true
-                }
-            ]
+            "externalConsole": true,
+            "preLaunchTask": "Build: Linux Debug (Clang)", 
+            "MIMode": "gdb", 
+            "miDebuggerPath": "/usr/bin/gdb",
         },
         {
-            "name": "(gdb) Launch windows",
+            "name": "Launch windows (clang)",
             "type": "cppvsdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/out/build/x64-debug/HaKey.exe",
+            "program": "${workspaceFolder}/out/build/x64-debug-clang/HaKey.exe",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${workspaceFolder}/out/build/x64-debug",
+            "cwd": "${workspaceFolder}/out/build/x64-debug-clang",
             "environment": [],
             "console": "externalTerminal",
-            "preLaunchTask": "CMake build debug windows",
+            "preLaunchTask": "Build: Windows Debug (Clang)",
         }
     ]
 }
