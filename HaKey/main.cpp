@@ -34,6 +34,9 @@ int main(int argc, char *argv[])
 
     std::unique_ptr<HaKey::Core::KeyChainHandler> _60KeyRemap = std::make_unique<HaKey::Layers::_60KeyRemap>();
     dispatcher.Add(std::move(_60KeyRemap));
+    
+    std::unique_ptr<HaKey::Core::KeyChainHandler> string_replace = std::make_unique<HaKey::Layers::StringReplaceLayer>();
+    dispatcher.Add(std::move(string_replace));
 
     dispatcher.Listen(linux_device_id);
 };
