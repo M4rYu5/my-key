@@ -1,8 +1,11 @@
 module;
 
+#include <algorithm>
+#include <chrono>
+#include <format>
+#include <functional>
 #include <string>
 #include <unordered_map>
-#include <algorithm>
 
 export module Layers:StringReplaceLayer;
 
@@ -16,13 +19,33 @@ namespace HaKey::Layers
     export class StringReplaceLayer : public BaseStringLayer
     {
     private:
-        std::unordered_map<std::string, std::string> replacements;
+        std::unordered_map<std::string, std::function<std::string()>> replacements;
 
     public:
         StringReplaceLayer()
         {
             replacements = {
-                {"4str", "Yes string replacement is working!"}};
+                {"4vid", []() { return "document.getElementsByTagName('video')[0].playbackRate = 3"; }},
+                {"4date",
+                 []()
+                 {
+                     const auto now = std::chrono::zoned_time(std::chrono::current_zone(), std::chrono::system_clock::now());
+                     return std::format("{:%Y-%m-%d}", now);
+                 }},
+                {"4time",
+                 []()
+                 {
+                     const auto now = std::chrono::zoned_time(std::chrono::current_zone(), std::chrono::system_clock::now());
+                     return std::format("{:%H:%M}", now);
+                 }},
+                {"4dt",
+                 []()
+                 {
+                     const auto now = std::chrono::zoned_time(std::chrono::current_zone(), std::chrono::system_clock::now());
+                     return std::format("{:%Y-%m-%d %H:%M}", now);
+                 }},
+
+            };
 
             size_t max_len = 0;
             for (const auto &pair : replacements)

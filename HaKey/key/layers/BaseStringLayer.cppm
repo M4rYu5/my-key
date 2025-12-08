@@ -1,6 +1,7 @@
 module;
 
 #include <deque>
+#include <functional>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -29,7 +30,8 @@ namespace HaKey::Layers
             max_buffer_size = size;
         }
 
-        void ProcessKey(Core::KeyContext &context, const std::unordered_map<std::string, std::string> &replacements)
+        void ProcessKey(Core::KeyContext &context,
+                        const std::unordered_map<std::string, std::function<std::string()>> &replacements)
         {
             Core::Key &key = context.key;
 
@@ -60,7 +62,7 @@ namespace HaKey::Layers
                                 context.result.AddFullKey(KeyCode::BACKSPACE);
                             }
 
-                            for (char c : pair.second)
+                            for (char c : pair.second())
                             {
                                 Utils::SendChar(c, context.result);
                             }
