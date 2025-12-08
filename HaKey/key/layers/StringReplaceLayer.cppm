@@ -18,14 +18,18 @@ namespace HaKey::Layers
 
     export class StringReplaceLayer : public BaseStringLayer
     {
-    private:
-        std::unordered_map<std::string, std::function<std::string()>> replacements;
-
     public:
         StringReplaceLayer()
         {
+            InitializeReplacements();
+            UpdateMaxBufferSize();
+        }
+    protected:
+        void InitializeReplacements()
+        {
             replacements = {
-                {"4vid", []() { return "document.getElementsByTagName('video')[0].playbackRate = 3"; }},
+                {"4vid", []()
+                 { return "document.getElementsByTagName('video')[0].playbackRate = 3"; }},
                 {"4date",
                  []()
                  {
@@ -43,22 +47,14 @@ namespace HaKey::Layers
                  {
                      const auto now = std::chrono::zoned_time(std::chrono::current_zone(), std::chrono::system_clock::now());
                      return std::format("{:%Y-%m-%d %H:%M}", now);
-                 }},
-
+                 }}
             };
-
-            size_t max_len = 0;
-            for (const auto &pair : replacements)
-            {
-                max_len = std::max(max_len, pair.first.length());
-            }
-            SetMaxBufferSize(max_len);
         }
 
+    public:
         void OnKey(Core::KeyContext &context) override
         {
-            ProcessKey(context, replacements);
-
+            ProcessKey(context);
             next(context);
         }
     };
