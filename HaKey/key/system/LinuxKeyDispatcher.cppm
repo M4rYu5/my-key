@@ -14,6 +14,10 @@ module;
 #include <linux/input.h>
 #include <linux/uinput.h>
 #include <sys/ioctl.h>
+
+#include <thread>
+#include <chrono>
+
 #endif
 
 export module System:Linux;
