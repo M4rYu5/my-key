@@ -2,7 +2,9 @@ module;
 
 #include <deque>
 #include <functional>
+#include <optional>
 #include <string>
+#include <tuple>
 #include <unordered_map>
 #include <vector>
 
@@ -21,6 +23,7 @@ namespace HaKey::Layers
     export class BaseStringLayer : public Core::KeyChainHandler
     {
     private:
+        std::optional<std::tuple<KeyCode, std::string, std::function<std::string()>>> pending_replacement;
         std::deque<KeyCode> key_buffer;
         size_t max_buffer_size = 0;
 
@@ -41,8 +44,8 @@ namespace HaKey::Layers
         void ProcessKey(Core::KeyContext &context)
         {
             Core::Key &key = context.key;
-
-            if (key.IsUp())
+            
+            if (key.IsDown())
             {
                 if (Utils::KeyCodeToChar(key.code) != '\0')
                 {
@@ -53,13 +56,21 @@ namespace HaKey::Layers
                     key_buffer.clear();
                 }
             }
+            else if (key.IsUp() && pending_replacement.has_value())
+            {
+                if (std::get<0>(*pending_replacement) == key.code)
+                {
+                    PerformReplacement(context, std::get<1>(*pending_replacement), std::get<2>(*pending_replacement)());
+                    pending_replacement.reset();
+                }
+            }
         }
 
     private:
         void HandleAlphanumericKey(Core::KeyContext &context)
         {
             UpdateKeyBuffer(context.key.code);
-            CheckForAndPerformReplacement(context);
+            CheckForAndSaveReplacement(context);
         }
 
         void UpdateKeyBuffer(KeyCode kc)
@@ -71,7 +82,7 @@ namespace HaKey::Layers
             }
         }
 
-        void CheckForAndPerformReplacement(Core::KeyContext &context)
+        void CheckForAndSaveReplacement(Core::KeyContext &context)
         {
             std::string current_buffer_str;
             for (const auto &kc : key_buffer)
@@ -83,7 +94,7 @@ namespace HaKey::Layers
             {
                 if (current_buffer_str.ends_with(pair.first))
                 {
-                    PerformReplacement(context, pair.first, pair.second());
+                    pending_replacement = std::make_tuple(context.key.code, pair.first, pair.second);
                     return;
                 }
             }
@@ -91,7 +102,6 @@ namespace HaKey::Layers
 
         void PerformReplacement(Core::KeyContext &context, const std::string &trigger, const std::string &replacement_text)
         {
-            // Match found, perform replacement
             for (size_t i = 0; i < trigger.length(); ++i)
             {
                 context.result.AddFullKey(KeyCode::BACKSPACE);
@@ -106,7 +116,6 @@ namespace HaKey::Layers
         }
 
     public:
-        // Making the destructor virtual is good practice for base classes.
         virtual ~BaseStringLayer() = default;
 
         virtual void OnKey(Core::KeyContext &context) override = 0;
