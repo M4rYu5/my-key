@@ -47,6 +47,28 @@
                 "Configure: Windows Debug (Clang)"
             ],
             "problemMatcher": []
+        },
+        {
+            "label": "Clean (Clang)",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "--build", "out/build/${input:cleanFolder}",
+                "--target", "clean"
+            ],
+            "problemMatcher": []
+        }
+    ],
+    "inputs": [
+        {
+            "id": "cleanFolder",
+            "type": "pickString",
+            "description": "Which build folder do you want to clean?",
+            "options": [
+                "x64-debug-clang",
+                "linux-debug"
+            ],
+            "default": "x64-debug-clang"
         }
     ]
 }
