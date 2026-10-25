@@ -46,7 +46,7 @@ namespace HaKey::System
 		}
 	}
 
-	export std::string LoadInputDeviceName()
+	export std::string LoadInputDevicePath()
 	{
 		const auto path = config_path();
 		if (!std::filesystem::exists(path))
@@ -67,17 +67,17 @@ namespace HaKey::System
 				continue;
 			}
 			const auto separator = line.find('=');
-			if (section != "input" || separator == std::string::npos || trim_setting(line.substr(0, separator)) != "device_name")
+			if (section != "input" || separator == std::string::npos || trim_setting(line.substr(0, separator)) != "device_path")
 				continue;
 
 			const auto value = trim_setting(line.substr(separator + 1));
 			if (value.empty() || value.front() != '"')
 				return value;
 			std::istringstream quoted_value(value);
-			std::string name;
-			if (quoted_value >> std::quoted(name))
-				return name;
-			std::cerr << "Invalid device_name in " << path << ". Please select a device again.\n";
+			std::string device_path;
+			if (quoted_value >> std::quoted(device_path))
+				return device_path;
+			std::cerr << "Invalid device_path in " << path << ". Please select a device again.\n";
 			return {};
 		}
 		if (settings.bad())
@@ -85,15 +85,15 @@ namespace HaKey::System
 		return {};
 	}
 
-	export void SaveInputDevice(const std::string &name)
+	export void SaveInputDevice(const std::string &device_path)
 	{
-		if (LoadInputDeviceName() == name)
+		if (LoadInputDevicePath() == device_path)
 			return;
 		const auto path = config_path();
 		std::filesystem::create_directories(path.parent_path());
 		const auto temporary = path.string() + ".tmp";
 		std::ofstream settings(temporary);
-		settings << "[input]\ndevice_name = " << std::quoted(name) << '\n';
+		settings << "[input]\ndevice_path = " << std::quoted(device_path) << '\n';
 		settings.close();
 		if (!settings)
 			throw std::runtime_error("Cannot save settings: " + path.string());

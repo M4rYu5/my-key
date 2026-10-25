@@ -114,7 +114,7 @@ namespace HaKey::System
 
 		bool open_input_device(const InputDevice &device, DeviceSelectionMode &mode)
 		{
-			input_fd = open(device.path.c_str(), O_RDONLY | O_CLOEXEC);
+			input_fd = open(device.persistent_path.c_str(), O_RDONLY | O_CLOEXEC);
 			if (input_fd < 0)
 				return input_setup_failed("Cannot open input device", device, errno);
 
@@ -128,7 +128,7 @@ namespace HaKey::System
 				std::cout << "The selected device changed. Please select again.\n";
 				return false;
 			}
-			SaveInputDevice(device.name);
+			SaveInputDevice(device.persistent_path);
 			setup_uinput_device();
 
 			while (is_key_pressed(input_fd, KEY_ENTER))

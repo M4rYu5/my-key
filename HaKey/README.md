@@ -61,7 +61,7 @@ Settings are saved in `$XDG_CONFIG_HOME/HaKey/settings.ini`
 
 ```ini
 [input]
-device_name = "Your keyboard name"
+device_path = "/dev/input/by-id/usb-BY_Tech_Gaming_Keyboard-event-kbd"
 ```
 
 ## Linux troubleshooting

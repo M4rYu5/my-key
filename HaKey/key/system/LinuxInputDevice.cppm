@@ -39,6 +39,7 @@ namespace HaKey::System
 	{
 		std::string name;
 		std::string path;
+		std::string persistent_path;
 
 		bool operator==(const InputDevice &) const = default;
 	};
@@ -62,6 +63,27 @@ namespace HaKey::System
 			return value.substr(first, value.find_last_not_of(" \t\r\n") - first + 1);
 		}
 
+		void assign_persistent_paths(std::vector<InputDevice> &devices, const std::filesystem::path &directory)
+		{
+			for (auto &device : devices)
+			{
+				if (!device.persistent_path.empty())
+					continue;
+				std::error_code error;
+				std::string preferred_path;
+				for (const auto &entry : std::filesystem::directory_iterator(directory, error))
+				{
+					const auto target = std::filesystem::canonical(entry.path(), error);
+					if (error || target != device.path)
+						continue;
+					const auto path = entry.path().string();
+					if (preferred_path.empty() || path < preferred_path)
+						preferred_path = path;
+				}
+				device.persistent_path = preferred_path;
+			}
+		}
+
 		std::vector<InputDevice> available_devices()
 		{
 			std::vector<InputDevice> devices;
@@ -77,8 +99,11 @@ namespace HaKey::System
 				const auto path = "/dev/input/" + event;
 				std::error_code error;
 				if (std::filesystem::exists(path, error))
-					devices.push_back({name, path});
+					devices.push_back({name, path, {}});
 			}
+			assign_persistent_paths(devices, "/dev/input/by-id");
+			assign_persistent_paths(devices, "/dev/input/by-path");
+			std::erase_if(devices, [](const auto &device) { return device.persistent_path.empty(); });
 			std::sort(devices.begin(), devices.end(), [](const auto &a, const auto &b)
 			{
 				return a.name != b.name ? a.name < b.name : a.path < b.path;
@@ -86,24 +111,14 @@ namespace HaKey::System
 			return devices;
 		}
 
-		struct DeviceMatch
+		const InputDevice *find_saved_device(const std::vector<InputDevice> &devices, const std::string &path)
 		{
-			const InputDevice *device = nullptr;
-			std::size_t count = 0;
-		};
-
-		DeviceMatch find_saved_device(const std::vector<InputDevice> &devices, const std::string &name)
-		{
-			DeviceMatch match;
 			for (const auto &device : devices)
 			{
-				if (!name.empty() && device.name == name)
-				{
-					match.device = &device;
-					++match.count;
-				}
+				if (!path.empty() && device.persistent_path == path)
+					return &device;
 			}
-			return match;
+			return nullptr;
 		}
 
 		void show_devices(const std::vector<InputDevice> &devices, bool refreshing)
@@ -159,23 +174,21 @@ namespace HaKey::System
 
 	export std::optional<InputDevice> SelectInputDevice(DeviceSelectionMode &mode)
 	{
-		const auto saved_name = LoadInputDeviceName();
+		const auto saved_path = LoadInputDevicePath();
 		auto devices = available_devices();
-		const auto saved = find_saved_device(devices, saved_name);
+		const auto saved = find_saved_device(devices, saved_path);
 
 		if (mode == DeviceSelectionMode::Automatic)
 		{
-			if (saved.count == 1)
-				return *saved.device;
-			mode = saved_name.empty() || saved.count > 1 ? DeviceSelectionMode::Manual : DeviceSelectionMode::Refresh;
+			if (saved)
+				return *saved;
+			mode = saved_path.empty() ? DeviceSelectionMode::Manual : DeviceSelectionMode::Refresh;
 		}
 
-		if (saved_name.empty())
+		if (saved_path.empty())
 			std::cout << "No input device configured.\n";
-		else if (saved.count > 1)
-			std::cout << "Multiple devices are named \"" << saved_name << "\". Please choose one.\n";
 		else if (mode == DeviceSelectionMode::Refresh)
-			std::cout << "Waiting for \"" << saved_name << "\" (auto-reconnect).\n";
+			std::cout << "Waiting for \"" << saved_path << "\" (auto-reconnect).\n";
 		show_devices(devices, mode == DeviceSelectionMode::Refresh);
 
 		TerminalInput terminal;
@@ -186,9 +199,9 @@ namespace HaKey::System
 			if (refreshing && std::chrono::steady_clock::now() >= next_refresh)
 			{
 				auto refreshed = available_devices();
-				const auto match = find_saved_device(refreshed, saved_name);
-				if (match.count == 1)
-					return *match.device;
+				const auto match = find_saved_device(refreshed, saved_path);
+				if (match)
+					return *match;
 				const bool changed = refreshed != devices;
 				if (changed || isatty(STDOUT_FILENO))
 				{
@@ -199,7 +212,7 @@ namespace HaKey::System
 						terminal.Clear();
 					}
 					devices = std::move(refreshed);
-					std::cout << "Waiting for \"" << saved_name << "\" (auto-reconnect).\n";
+					std::cout << "Waiting for \"" << saved_path << "\" (auto-reconnect).\n";
 					show_devices(devices, true);
 				}
 				next_refresh = std::chrono::steady_clock::now() + refresh_interval;
@@ -224,7 +237,7 @@ namespace HaKey::System
 			const auto input = terminal.ReadLine();
 			if (!terminal.IsOpen())
 			{
-				if (!refreshing || saved_name.empty())
+				if (!refreshing || saved_path.empty())
 				{
 					std::cout << "\nRun HaKey in a terminal to select an input device.\n";
 					return std::nullopt;
