@@ -84,34 +84,23 @@ sudo ./out/build/linux-debug/HaKey
 
 Running with `sudo` uses that process's configuration directory.
 
-#### Run as your normal user
+#### Run with pkexec
 
-Create a dedicated group to run HaKey without `sudo` and keep your normal user
-configuration:
-
-```sh
-sudo groupadd -f hakey
-sudo usermod -aG hakey "$USER"
-```
-
-Create `/etc/udev/rules.d/99-hakey.rules` with:
-
-```udev
-SUBSYSTEM=="input", KERNEL=="event*", GROUP="hakey", MODE="0660"
-SUBSYSTEM=="misc", KERNEL=="uinput", GROUP="hakey", MODE="0660"
-```
-
-Reload the rules and apply them to existing devices:
+You can also run HaKey with `pkexec`. From the `HaKey` directory:
 
 ```sh
-sudo udevadm control --reload-rules
-sudo udevadm trigger --subsystem-match=input
-sudo udevadm trigger --subsystem-match=misc --sysname-match=uinput
+pkexec "$PWD/out/build/linux-debug/HaKey"
 ```
 
-Log out and back in to apply group membership, then run HaKey again. These rules
-allow group members to read all input events and write to the virtual input
-device.
+This runs HaKey as root and normally saves settings in
+`/root/.config/HaKey/settings.ini`. Run it in a terminal to select the input
+device on the first launch.
+
+#### Notes
+
+Other ways to grant device access, such as a dedicated service account with
+targeted udev rules or a privileged helper, allow more limited permissions but
+require more involved setup or code changes.
 
 ### Missing `/dev/uinput`
 
