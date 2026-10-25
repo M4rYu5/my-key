@@ -38,6 +38,12 @@ namespace HaKey::Core {
 			}
 		}
 
+		virtual void Reset()
+		{
+			if (_next)
+				_next->Reset();
+		}
+
 		virtual ~KeyChainHandler() = default;
 	};
 }

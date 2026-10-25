@@ -23,6 +23,12 @@ namespace HaKey::Layers
 		/// </summary>
 		virtual void OnKey(Core::KeyContext& context) override = 0;
 
+        void Reset() override
+        {
+            active_keys.clear();
+            Core::KeyChainHandler::Reset();
+        }
+
 		virtual ~BaseHotKeyLayer() override = default;
 
     protected:
