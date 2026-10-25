@@ -9,6 +9,10 @@ A representation of changes in a 60% keyboard (alternative layers are not displa
 
 ![image](keyboard.png)
 
+## HaKey (app)
+
+[HaKey](HaKey/) is a C++ alternative to AHK, supporting Linux and Windows.
+
 ## Scripts (AHK, windows)
 
 List of scripts:
@@ -30,8 +34,4 @@ List of scripts:
 Please note that these scripts are designed for personal use and may need to be adjusted based on your specific needs and keyboard layout.
 
 
-## HaKey (app)
 
-[HaKey](HaKey/) is a C++ alternative to AHK, supporting Linux and Windows.
-See the [HaKey README](HaKey/README.md) for its stack, layers, build commands,
-Linux device configuration, and troubleshooting.
