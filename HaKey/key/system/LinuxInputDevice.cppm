@@ -29,6 +29,12 @@ namespace HaKey::System
 {
 	export inline constexpr char VirtualKeyboardName[] = "HaKey Virtual Keyboard";
 
+	export void ClearTerminal()
+	{
+		if (isatty(STDOUT_FILENO))
+			std::cout << "\033[2J\033[H" << std::flush;
+	}
+
 	export struct InputDevice
 	{
 		std::string name;
@@ -183,11 +189,17 @@ namespace HaKey::System
 				const auto match = find_saved_device(refreshed, saved_name);
 				if (match.count == 1)
 					return *match.device;
-				if (refreshed != devices)
+				const bool changed = refreshed != devices;
+				if (changed || isatty(STDOUT_FILENO))
 				{
-					std::cout << "\nDevice list changed. Select again.\n";
-					terminal.Clear();
+					ClearTerminal();
+					if (changed)
+					{
+						std::cout << "Device list changed. Select again.\n";
+						terminal.Clear();
+					}
 					devices = std::move(refreshed);
+					std::cout << "Waiting for \"" << saved_name << "\" (auto-reconnect).\n";
 					show_devices(devices, true);
 				}
 				next_refresh = std::chrono::steady_clock::now() + refresh_interval;
@@ -225,11 +237,15 @@ namespace HaKey::System
 			const bool quit = *input == "q" || *input == "Q";
 			const bool refresh_once = *input == "r" || *input == "R";
 			if (quit && !refreshing)
+			{
+				ClearTerminal();
 				return std::nullopt;
+			}
 			if (quit || (!refreshing && refresh_once))
 			{
 				mode = DeviceSelectionMode::Manual;
 				devices = available_devices();
+				ClearTerminal();
 				show_devices(devices, false);
 				continue;
 			}

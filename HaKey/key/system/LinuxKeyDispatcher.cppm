@@ -58,12 +58,14 @@ namespace HaKey::System
 
 		void Listen() override
 		{
+			ClearTerminal();
 			auto mode = DeviceSelectionMode::Automatic;
 			while (true)
 			{
 				const auto device = SelectInputDevice(mode);
 				if (!device)
 					return;
+				ClearTerminal();
 				if (!open_input_device(*device, mode))
 					continue;
 				std::cout << "Listening to " << device->name << " (" << device->path << ")\n"
@@ -72,6 +74,7 @@ namespace HaKey::System
 				const auto result = listen_to_device(*device);
 				close_devices();
 				reset_state();
+				ClearTerminal();
 				if (result == ListenResult::Disconnected)
 					std::cout << "Device \"" << device->name << "\" was disconnected.\n";
 				mode = result == ListenResult::ChangeDevice ? DeviceSelectionMode::Manual : DeviceSelectionMode::Refresh;
