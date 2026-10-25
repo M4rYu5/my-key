@@ -1,42 +1,35 @@
 ﻿#include <memory>
 #include <iostream>
+#include <exception>
 #include <cstdlib>
 
-import System;
-import Core;
 import KeyDispatcher;
 import Layers;
 
-
-
-int main(int argc, char *argv[])
+int main(int argc, char *[])
 {
-    int linux_device_id = 0;
-
 #if LINUX
     if (argc > 1)
     {
-        try
-        {
-            linux_device_id = std::stoi(argv[1]);
-        }
-        catch (const std::exception &e)
-        {
-            std::cerr << "Invalid device ID: " << argv[1] << " (defaulting to 0)\n";
-        }
+        std::cerr << "Usage: HaKey\n";
+        return EXIT_FAILURE;
     }
 #endif
 
     HaKey::KeyDispatcher dispatcher;
 
-    std::unique_ptr<HaKey::Core::KeyChainHandler> home_row = std::make_unique<HaKey::Layers::HomeRowNavigation>();
-    dispatcher.Add(std::move(home_row));
+    dispatcher.Add(std::make_unique<HaKey::Layers::HomeRowNavigation>());
+    dispatcher.Add(std::make_unique<HaKey::Layers::_60KeyRemap>());
+    dispatcher.Add(std::make_unique<HaKey::Layers::StringReplaceLayer>());
 
-    std::unique_ptr<HaKey::Core::KeyChainHandler> _60KeyRemap = std::make_unique<HaKey::Layers::_60KeyRemap>();
-    dispatcher.Add(std::move(_60KeyRemap));
-    
-    std::unique_ptr<HaKey::Core::KeyChainHandler> string_replace = std::make_unique<HaKey::Layers::StringReplaceLayer>();
-    dispatcher.Add(std::move(string_replace));
-
-    dispatcher.Listen(linux_device_id);
-};
+    try
+    {
+        dispatcher.Listen();
+    }
+    catch (const std::exception &error)
+    {
+        std::cerr << error.what() << '\n';
+        return EXIT_FAILURE;
+    }
+    return EXIT_SUCCESS;
+}

@@ -1,8 +1,6 @@
 module;
 
 #include <memory>
-#include <iostream>
-#include <cstring>
 
 
 export module KeyDispatcher;
@@ -21,22 +19,28 @@ namespace HaKey
 		Core::KeyContext context = Core::KeyContext();
 
 	public:
-		void Listen(int linux_device_id = 0)
+		void Listen()
 		{
 			// propagate keys that are pressed in combination with HotKeys, keeping modifiers
-			std::unique_ptr<Core::KeyChainHandler> propagate = std::make_unique<Layers::PropagateKey>();
-			Add(std::move(propagate));
+			Add(std::make_unique<Layers::PropagateKey>());
 
 			// init system dispatcher
 #if LINUX
-			_dispatcher = std::make_unique<System::LinuxKeyDispatcher>([this](Core::Key key)
-																	   { this->KeyHandler(key); });
-			_dispatcher->Listen(linux_device_id);
+			_dispatcher = std::make_unique<System::LinuxKeyDispatcher>(
+				[this](Core::Key key) { this->KeyHandler(key); },
+				[this]() { Reset(); });
+			_dispatcher->Listen();
 #endif
 #if WINDOWS
 			_dispatcher = std::make_unique<System::WindowsKeyDispatcher>([this](Core::Key key) { this->KeyHandler(key); });
 			_dispatcher->Listen();
 #endif
+		}
+
+		void Reset() override
+		{
+			context = Core::KeyContext();
+			Core::KeyChainHandler::Reset();
 		}
 
 	private:

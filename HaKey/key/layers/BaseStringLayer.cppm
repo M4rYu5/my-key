@@ -116,6 +116,13 @@ namespace HaKey::Layers
         }
 
     public:
+        void Reset() override
+        {
+            pending_replacement.reset();
+            key_buffer.clear();
+            Core::KeyChainHandler::Reset();
+        }
+
         virtual ~BaseStringLayer() = default;
 
         virtual void OnKey(Core::KeyContext &context) override = 0;
