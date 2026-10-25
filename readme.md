@@ -31,34 +31,7 @@ Please note that these scripts are designed for personal use and may need to be 
 
 
 ## HaKey (app)
-The [HaKey](HaKey/) application was created as an alternative to AHK. Currently supporting Linux and Windows [^1].
 
-### Stack:
-- Written in C++ for performance and compatibility reasons 🏃‍♂️
-- Created with modules for fast development and sanity 😇
-- Used CMake and Clang, to be able to build from any platform. 👽
-- Haven't followed C++ naming convention, it's more like C#. 🦄
-- Non user-configurable; layers are hard-coded for my needs:
-  - [`homeRowNavigation.ahk`](scripts/homeRowNavigation.ahk) in [HomeRowNavigation.cppm](HaKey/key/layers/HomeRowNavigation.cppm)
-  - [`60pKeyRemap.ahk`](scripts/60pKeyRemap.ahk) in [60KeyRemap.cppm](HaKey/key/layers/60KeyRemap.cppm)
-
-### Commands:
-- CMake: `sudo apt install cmake`
-- CLang tools: `sudo apt install clang-tools`
-- __Build__:
-  - Windows (VS): `cmake --preset=x64-release` & `cmake --build --preset=x64-release`
-  - Windows (Clang): `cmake --preset=x64-release-clang` & `cmake --build --preset=x64-release-clang`
-  - Linux (Clang): `cmake --preset=linux-release` & `cmake --build --preset=linux-release`
-- __Troubleshooting__ (Linux):
-  - __FAIL TO READ IO__ (input / uinput):
-    - You need permissions:
-      - to read the input `sudo chmod +r /dev/input/event0`, change 0 with your input index from: `cat /proc/bus/input/devices`
-        - if you're not sure which one is the keyboard you can use `sudo apt install input-utils` and probe each device with `sudo input-events 1`
-      - and write in uinput: `sudo chmod a+rw /dev/uinput`
-  - __Missing `/dev/uinput`__ (Kubuntu 25.04)
-    - If `modinfo uinput` prints nothing, your kernel is missing the _uinput_ module. 
-    - You can try `sudo apt update && sudo apt upgrade` and reboot, but this only works if a new kernel including _uinput_ is available.
-    - The solution is to install the missing modules: `sudo apt install linux-modules-extra-$(uname -r)` then reboot.
-    - On non-Ubuntu-based distributions, you’ll need to use or install a kernel containing the _uinput_ module.
-
-[^1]: Support for MacOS can be added (probably), but it's not planned.
+[HaKey](HaKey/) is a C++ alternative to AHK, supporting Linux and Windows.
+See the [HaKey README](HaKey/README.md) for its stack, layers, build commands,
+Linux device configuration, and troubleshooting.
